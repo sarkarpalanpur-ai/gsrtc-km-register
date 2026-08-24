@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GSRTC KM Register</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef2f6;color:#17202a}
+header{background:#0b5cab;color:white;padding:14px 16px;position:sticky;top:0;z-index:10}
+h1{margin:0;font-size:21px}
+.sub{font-size:12px;margin-top:4px;opacity:.9}
+.wrap{padding:12px;max-width:1700px;margin:auto}
+.card{background:white;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px #0001}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}
+label{font-size:12px;font-weight:bold}
+input,select,button{font:inherit}
+input,select{width:100%;padding:10px;border:1px solid #b9c3cf;border-radius:7px;margin-top:4px}
+button{border:0;border-radius:7px;padding:10px 13px;background:#0b5cab;color:white;font-weight:bold;cursor:pointer}
+button.secondary{background:#52616f}
+button.green{background:#198754}
+button.orange{background:#d97706}
+button.red{background:#b42318}
+button.light{background:#e8eef5;color:#17324d}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.note{font-size:12px;color:#52616f;margin-top:8px}
+.tablebox{overflow:auto;border:1px solid #ccd5df;border-radius:8px;max-height:65vh}
+table{border-collapse:collapse;min-width:1900px;width:100%;background:#fff}
+th,td{border:1px solid #cbd5df;padding:6px;text-align:center;white-space:nowrap;font-size:12px}
+thead th{background:#dce9f7;position:sticky;top:0;z-index:2}
+thead tr:first-child th{background:#bcd5ed;font-size:13px}
+td.daily{font-weight:bold;background:#f7fbff}
+td.total{font-weight:bold;background:#f1f8f3}
+td input{padding:5px;margin:0;width:85px;text-align:center}
+.badge{display:inline-block;padding:4px 7px;border-radius:10px;background:#e9f3ff;color:#0b5cab;font-size:12px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:center;justify-content:center;padding:12px}
+.modal.show{display:flex}
+.modalbox{background:white;border-radius:12px;max-width:1000px;width:100%;max-height:90vh;overflow:auto;padding:16px}
+.modalgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.small{font-size:11px;color:#5f6b76}
+</style>
+</head>
+<body>
+<header>
+  <h1>GSRTC KM Register</h1>
+  <div class="sub">Date-wise Daily KM → Monthly KM + all maintenance/program KM automatically increase</div>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <div class="grid">
+      <div><label>VEH. NO.</label><input id="vehNo" placeholder="3868"></div>
+      <div><label>MAKE</label><input id="make" placeholder="TATA SU"></div>
+      <div><label>Month</label><input id="month" type="month"></div>
+    </div>
+    <div class="actions">
+      <button onclick="addDaily()">➕ ADD DAILY KM</button>
+      <button class="orange" onclick="openOldKm()">🛠 OLD KM / PROGRAM BASE</button>
+      <button class="green" onclick="exportExcel()">⬇ EXPORT EXCEL</button>
+      <button class="light" onclick="document.getElementById('file').click()">⬆ IMPORT EXCEL</button>
+      <input id="file" type="file" accept=".xlsx,.xls,.csv" hidden onchange="importExcel(event)">
+      <button class="secondary" onclick="saveBrowser()">💾 SAVE</button>
+      <button class="red" onclick="clearAll()">CLEAR</button>
+    </div>
+    <div class="note">
+      Daily KM એક જ વાર નાખો. તે જ તારીખની entry માટે Monthly KM અને નીચેના બધા program KM માં automatic add થશે.
+      Program reset/જૂનું KM નાખવું હોય તો <b>OLD KM / PROGRAM BASE</b> button વાપરો.
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+      <b>DAILY KM REGISTER</b>
+      <span class="badge" id="summary">Total Daily KM: 0</span>
+    </div>
+    <div class="tablebox" style="margin-top:10px">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th rowspan="2">DATE</th>
+            <th rowspan="2">DAILY KM</th>
+            <th rowspan="2">MONTHLY KM</th>
+            <th rowspan="2">DOCKING KM</th>
+            <th rowspan="2">ENGINE OIL<br>CHANGE KM</th>
+            <th rowspan="2">VEH. PROG. KM</th>
+            <th rowspan="2">BREATHER<br>CARTRIDGE KM</th>
+            <th rowspan="2">FUEL FILT CUM<br>WATER SEP KM</th>
+            <th rowspan="2">UREA FILTER KM</th>
+            <th rowspan="2">PRI. AIR FILTER KM</th>
+            <th rowspan="2">SEC. AIR FILTER KM</th>
+            <th rowspan="2">GEAR OIL CHANGE KM</th>
+            <th rowspan="2">DIFF. OIL CHANGE KM</th>
+            <th rowspan="2">POWER STEERING OIL KM</th>
+            <th rowspan="2">RADIATOR COOLANT KM</th>
+            <th rowspan="2">SERVICE KIT DOSING KM</th>
+          </tr>
+          <tr></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="oldModal">
+ <div class="modalbox">
+   <h3>જૂનું KM / Program Base KM</h3>
+   <div class="small">દરેક program માટે અગાઉનું KM નાખી શકાય છે. ત્યારબાદ Daily KM દરેક program માં automatic ઉમેરાશે.</div>
+   <div class="modalgrid" id="oldGrid" style="margin-top:12px"></div>
+   <div class="actions">
+     <button onclick="saveOldKm()">SAVE OLD KM</button>
+     <button class="secondary" onclick="closeOldKm()">CLOSE</button>
+   </div>
+ </div>
+</div>
+
+<script>
+const PROGRAMS = [
+ "DOCKING KM","ENGINE OIL CHANGE KM","VEH. PROG. KM","BREATHER CARTRIDGE KM",
+ "FUEL FILT CUM WATER SEP KM","UREA FILTER KM","PRI. AIR FILTER KM",
+ "SEC. AIR FILTER KM","GEAR OIL CHANGE KM","DIFF. OIL CHANGE KM",
+ "POWER STEERING OIL KM","RADIATOR COOLANT KM","SERVICE KIT DOSING KM"
+];
+
+let rows = [];
+let base = {};
+PROGRAMS.forEach(p => base[p]=0);
+
+const $ = id => document.getElementById(id);
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function num(v){let n=parseFloat(String(v??"").replace(/,/g,""));return Number.isFinite(n)?n:0;}
+function fmt(n){return Math.round(num(n)).toLocaleString("en-IN");}
+
+function init(){
+  const d=new Date();
+  $("month").value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  render();
+}
+function totalDaily(){return rows.reduce((a,r)=>a+num(r.daily),0);}
+
+function currentProgramValue(program, index){
+  let before=0;
+  for(let i=0;i<=index;i++) before += num(rows[i].daily);
+  return num(base[program])+before;
+}
+
+function addDaily(){
+  const d=new Date();
+  const defaultDate=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  const date=prompt("Date (DD-MM-YYYY)", defaultDate.split("-").reverse().join("-"));
+  if(!date) return;
+  const daily=prompt("DAILY KM", "");
+  if(daily===null) return;
+  const km=num(daily);
+  if(km<0){alert("Daily KM ખોટું છે.");return;}
+  const old=rows.find(r=>r.date===date);
+  if(old){
+    if(!confirm("આ તારીખની entry પહેલેથી છે. Daily KM replace કરવો?")) return;
+    old.daily=km;
+  }else rows.push({date,daily:km});
+  rows.sort((a,b)=>dateKey(a.date)-dateKey(b.date));
+  render();
+}
+
+function dateKey(s){
+  const p=String(s).split("-");
+  if(p.length===3 && p[2]?.length===4) return new Date(+p[2],+p[1]-1,+p[0]).getTime();
+  return new Date(s).getTime()||0;
+}
+
+function monthlyFor(index){
+  const month=String(rows[index].date).slice(3);
+  let total=0;
+  rows.forEach(r=>{if(String(r.date).slice(3)===month) total+=num(r.daily)});
+  return total;
+}
+
+function render(){
+  const tb=document.querySelector("#tbl tbody");
+  tb.innerHTML="";
+  rows.forEach((r,i)=>{
+    let html=`<tr>
+      <td>${esc(r.date)}</td>
+      <td class="daily"><input type="number" min="0" value="${num(r.daily)}" onchange="editDaily(${i},this.value)"></td>
+      <td class="total">${fmt(monthlyFor(i))}</td>`;
+    PROGRAMS.forEach(p=>html+=`<td>${fmt(currentProgramValue(p,i))}</td>`);
+    html+="</tr>";
+    tb.insertAdjacentHTML("beforeend",html);
+  });
+  $("summary").textContent="Total Daily KM: "+fmt(totalDaily());
+}
+
+function editDaily(i,v){
+  rows[i].daily=Math.max(0,num(v));
+  render();
+}
+
+function openOldKm(){
+  const grid=$("oldGrid");
+  grid.innerHTML=PROGRAMS.map((p,i)=>`
+    <div><label>${i+4}. ${esc(p)}</label><input class="old-input" data-p="${esc(p)}" type="number" value="${num(base[p])}"></div>
+  `).join("");
+  $("oldModal").classList.add("show");
+}
+function closeOldKm(){$("oldModal").classList.remove("show");}
+function saveOldKm(){
+  document.querySelectorAll(".old-input").forEach(x=>base[x.dataset.p]=num(x.value));
+  closeOldKm(); render();
+}
+
+function saveBrowser(){
+  localStorage.setItem("GSRTC_KM_REGISTER",JSON.stringify({
+    vehNo:$("vehNo").value,make:$("make").value,month:$("month").value,rows,base
+  }));
+  alert("Data saved.");
+}
+function loadBrowser(){
+  try{
+    const x=JSON.parse(localStorage.getItem("GSRTC_KM_REGISTER")||"null");
+    if(!x)return;
+    $("vehNo").value=x.vehNo||"";
+    $("make").value=x.make||"";
+    $("month").value=x.month||$("month").value;
+    rows=Array.isArray(x.rows)?x.rows:[];
+    base=Object.assign(base,x.base||{});
+  }catch(e){}
+}
+
+function exportExcel(){
+  const wb=XLSX.utils.book_new();
+  const data=[
+    ["VEH. NO.",$("vehNo").value,"MAKE",$("make").value],
+    ["DATE","DAILY KM","MONTHLY KM",...PROGRAMS]
+  ];
+  rows.forEach((r,i)=>{
+    data.push([r.date,num(r.daily),monthlyFor(i),...PROGRAMS.map(p=>currentProgramValue(p,i))]);
+  });
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws["!cols"]=[{wch:14},{wch:12},{wch:14},...PROGRAMS.map(()=>({wch:18}))];
+  XLSX.utils.book_append_sheet(wb,ws,"KM Register");
+  const name=`GSRTC_KM_${($("month").value||"REGISTER").replace("-","")}.xlsx`;
+  XLSX.writeFile(wb,name);
+}
+
+function importExcel(ev){
+  const f=ev.target.files[0]; if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:"array"});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const a=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+      if(!a.length)throw Error("Empty Excel");
+      let veh="",make="",headerRow=-1;
+      for(let i=0;i<Math.min(8,a.length);i++){
+        const line=a[i].map(v=>String(v).trim().toUpperCase());
+        if(line.includes("DATE")) headerRow=i;
+        const vi=line.indexOf("VEH. NO."); if(vi>=0) veh=a[i][vi+1]||"";
+        const mi=line.indexOf("MAKE"); if(mi>=0) make=a[i][mi+1]||"";
+      }
+      if(headerRow<0){
+        headerRow=a.findIndex(r=>r.some(v=>String(v).trim().toUpperCase()==="DATE"));
+      }
+      if(headerRow<0)throw Error("DATE column not found");
+      const headers=a[headerRow].map(v=>String(v).trim().toUpperCase());
+      const aliases={
+        "DATE":["DATE"],"DAILY KM":["DAILY KM","DAILY_KM","DEALY KM","DEALY_KM"],
+        "MONTHLY KM":["MONTHLY KM","MONTHLY_KM"]
+      };
+      const idx=(name)=>{
+        const candidates=aliases[name]||[name];
+        for(const c of candidates){const j=headers.indexOf(c);if(j>=0)return j;}
+        return -1;
+      };
+      const di=idx("DATE"), ki=idx("DAILY KM");
+      if(di<0||ki<0)throw Error("DATE / DAILY KM column not found");
+      const imported=[];
+      for(let i=headerRow+1;i<a.length;i++){
+        const date=a[i][di];
+        if(date===""||date==null)continue;
+        let ds="";
+        if(typeof date==="number"){
+          const z=XLSX.SSF.parse_date_code(date);
+          ds=`${String(z.d).padStart(2,"0")}-${String(z.m).padStart(2,"0")}-${z.y}`;
+        }else ds=String(date).trim();
+        imported.push({date:ds,daily:num(a[i][ki])});
+      }
+      rows=imported;
+      if(veh)$("vehNo").value=veh;
+      if(make)$("make").value=make;
+      // If imported sheet already contains opening/base program KM,
+      // use the first available program value as the base.
+      PROGRAMS.forEach(p=>{
+        const j=headers.indexOf(p);
+        if(j>=0 && a[headerRow+1]) base[p]=num(a[headerRow+1][j]);
+      });
+      render();
+      alert(`IMPORT COMPLETE\\nImported rows: ${rows.length}`);
+    }catch(err){alert("Excel import error: "+err.message);}
+    ev.target.value="";
+  };
+  reader.readAsArrayBuffer(f);
+}
+
+function clearAll(){
+  if(!confirm("બધી KM entry delete કરવી?"))return;
+  rows=[]; render();
+}
+init(); loadBrowser(); render();
+</script>
+</body>
+</html>
