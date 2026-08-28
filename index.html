@@ -2,308 +2,398 @@
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>GSRTC Tyre Management</title>
 
+<!-- EXCEL LIBRARY -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <style>
+
 *{
-    box-sizing:border-box;
+ box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f3f6fa;
-    color:#172033;
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f3f6fa;
+ color:#172033;
 }
 
 header{
-    background:#0757a0;
-    color:white;
-    padding:18px;
-    text-align:center;
-    position:sticky;
-    top:0;
-    z-index:10;
+ background:#0757a0;
+ color:white;
+ padding:18px;
+ text-align:center;
+ position:sticky;
+ top:0;
+ z-index:20;
 }
 
 header h1{
-    margin:0;
-    font-size:23px;
+ margin:0;
+ font-size:24px;
 }
 
 header p{
-    margin:6px 0 0;
-    font-size:13px;
+ margin:6px 0 0;
+ font-size:13px;
 }
 
 nav{
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-    padding:8px;
-    background:white;
-    position:sticky;
-    top:73px;
-    z-index:9;
-    box-shadow:0 2px 8px #0002;
+ display:flex;
+ gap:6px;
+ overflow-x:auto;
+ padding:8px;
+ background:white;
+ position:sticky;
+ top:76px;
+ z-index:19;
+ box-shadow:0 2px 8px #0002;
 }
 
 nav button{
-    border:0;
-    background:#e8f1fb;
-    color:#0757a0;
-    padding:10px 13px;
-    border-radius:8px;
-    white-space:nowrap;
-    font-weight:bold;
+ border:0;
+ background:#e8f1fb;
+ color:#0757a0;
+ padding:11px 14px;
+ border-radius:8px;
+ white-space:nowrap;
+ font-weight:bold;
 }
 
 nav button.active{
-    background:#0757a0;
-    color:white;
+ background:#0757a0;
+ color:white;
 }
 
 main{
-    max-width:1200px;
-    margin:auto;
-    padding:14px;
+ max-width:1250px;
+ margin:auto;
+ padding:14px;
 }
 
 .tab{
-    display:none;
+ display:none;
 }
 
 .tab.active{
-    display:block;
+ display:block;
 }
 
 .card{
-    background:white;
-    border-radius:12px;
-    padding:15px;
-    margin-bottom:15px;
-    box-shadow:0 2px 10px #0001;
+ background:white;
+ border-radius:12px;
+ padding:16px;
+ margin-bottom:15px;
+ box-shadow:0 2px 10px #0001;
 }
 
 h2{
-    color:#0757a0;
-    font-size:19px;
-    margin:0 0 13px;
+ color:#0757a0;
+ margin:0 0 14px;
+ font-size:20px;
+}
+
+h3{
+ color:#0757a0;
 }
 
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:10px;
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+ gap:10px;
 }
 
 label{
-    font-weight:bold;
-    font-size:13px;
-    display:block;
-    margin-bottom:5px;
+ display:block;
+ font-size:13px;
+ font-weight:bold;
+ margin-bottom:5px;
 }
 
 input,
 select{
-    width:100%;
-    padding:10px;
-    border:1px solid #ccd5e0;
-    border-radius:7px;
-    font-size:15px;
-    background:white;
+ width:100%;
+ padding:10px;
+ border:1px solid #ccd5e0;
+ border-radius:7px;
+ font-size:15px;
+ background:white;
 }
 
 .btn{
-    border:0;
-    border-radius:7px;
-    padding:10px 14px;
-    font-weight:bold;
-    margin:5px 3px 0 0;
+ border:0;
+ border-radius:7px;
+ padding:10px 14px;
+ font-weight:bold;
+ margin:5px 3px 0 0;
+ cursor:pointer;
 }
 
 .primary{
-    background:#0757a0;
-    color:white;
+ background:#0757a0;
+ color:white;
 }
 
 .green{
-    background:#168548;
-    color:white;
+ background:#168548;
+ color:white;
 }
 
 .red{
-    background:#d93025;
-    color:white;
-}
-
-.gray{
-    background:#e9edf2;
-    color:#263548;
+ background:#d93025;
+ color:white;
 }
 
 .orange{
-    background:#e67e22;
-    color:white;
+ background:#e67e22;
+ color:white;
+}
+
+.gray{
+ background:#e9edf2;
+ color:#263548;
+}
+
+.purple{
+ background:#673ab7;
+ color:white;
 }
 
 .tablewrap{
-    overflow:auto;
-    margin-top:14px;
+ overflow:auto;
+ margin-top:15px;
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:850px;
+ width:100%;
+ border-collapse:collapse;
+ min-width:850px;
 }
 
 th,
 td{
-    border:1px solid #dce2e8;
-    padding:8px;
-    text-align:left;
-    font-size:13px;
+ border:1px solid #dce2e8;
+ padding:8px;
+ text-align:left;
+ font-size:13px;
 }
 
 th{
-    background:#eaf2fb;
-    color:#0757a0;
+ background:#eaf2fb;
+ color:#0757a0;
 }
 
 .stat{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:10px;
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+ gap:10px;
 }
 
 .stat div{
-    background:#eef6ff;
-    border-radius:10px;
-    padding:14px;
-    text-align:center;
+ background:#eef6ff;
+ border-radius:10px;
+ padding:15px;
+ text-align:center;
 }
 
 .stat b{
-    display:block;
-    font-size:23px;
-    color:#0757a0;
-    margin-bottom:4px;
+ display:block;
+ font-size:24px;
+ color:#0757a0;
+ margin-bottom:5px;
 }
 
 .msg{
-    padding:10px;
-    border-radius:7px;
-    margin-top:10px;
-    display:none;
+ padding:10px;
+ border-radius:7px;
+ margin-top:10px;
+ display:none;
 }
 
 .ok{
-    background:#e8f7ed;
-    color:#126b35;
+ background:#e8f7ed;
+ color:#126b35;
 }
 
 .err{
-    background:#fdecec;
-    color:#9c1c1c;
+ background:#fdecec;
+ color:#9c1c1c;
 }
 
 .small{
-    color:#667085;
-    font-size:12px;
+ color:#667085;
+ font-size:12px;
 }
 
 .badge{
-    padding:4px 7px;
-    border-radius:5px;
-    font-size:11px;
-    font-weight:bold;
+ display:inline-block;
+ padding:4px 8px;
+ border-radius:5px;
+ font-size:11px;
+ font-weight:bold;
 }
 
 .fitted{
-    background:#dff5e7;
-    color:#126b35;
+ background:#dff5e7;
+ color:#126b35;
 }
 
 .removed{
-    background:#fde1df;
-    color:#9c1c1c;
+ background:#fde1df;
+ color:#9c1c1c;
 }
 
 .position{
-    display:inline-block;
-    padding:7px 10px;
-    margin:4px;
-    background:#eaf2fb;
-    border-radius:7px;
-    color:#0757a0;
-    font-weight:bold;
+ display:inline-block;
+ background:#eaf2fb;
+ color:#0757a0;
+ padding:7px 10px;
+ border-radius:7px;
+ margin:4px;
+ font-weight:bold;
 }
 
 .position span{
-    color:#d93025;
-    cursor:pointer;
-    margin-left:5px;
+ color:#d93025;
+ cursor:pointer;
+ margin-left:5px;
 }
 
 .empty{
-    text-align:center;
-    color:#777;
-    padding:20px;
+ text-align:center;
+ color:#777;
+ padding:20px;
 }
+
+.importbox{
+ border:2px dashed #b8cbe0;
+ border-radius:10px;
+ padding:20px;
+ text-align:center;
+ background:#f8fbff;
+}
+
+@media print{
+
+header,
+nav,
+.no-print,
+button,
+input,
+select,
+.msg{
+ display:none !important;
+}
+
+body{
+ background:white;
+}
+
+.card{
+ box-shadow:none;
+}
+
+.tab{
+ display:none !important;
+}
+
+#report{
+ display:block !important;
+}
+
+table{
+ min-width:100%;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-    <h1>GSRTC TYRE MANAGEMENT</h1>
-    <p>Bus • Tyre • Fit / Remove • Progressive KM • Total KM</p>
+
+<h1>GSRTC TYRE MANAGEMENT</h1>
+
+<p>
+BUS • TYRE • FIT / REMOVE • PROGRESSIVE KM • REPORT
+</p>
+
 </header>
+
 
 <nav>
 
-<button class="active" onclick="showTab('dashboard',this)">
+<button
+class="active"
+onclick="showTab('dashboard',this)"
+>
 Dashboard
 </button>
 
-<button onclick="showTab('bus',this)">
+<button
+onclick="showTab('bus',this)"
+>
 BUS MASTER
 </button>
 
-<button onclick="showTab('tyre',this)">
+<button
+onclick="showTab('tyre',this)"
+>
 TYRE MASTER
 </button>
 
-<button onclick="showTab('entry',this)">
+<button
+onclick="showTab('entry',this)"
+>
 TYRE ENTRY
 </button>
 
-<button onclick="showTab('km',this)">
+<button
+onclick="showTab('km',this)"
+>
 DAILY KM
 </button>
 
-<button onclick="showTab('report',this)">
+<button
+onclick="showTab('report',this)"
+>
 REPORT
 </button>
 
-<button onclick="showTab('backup',this)">
+<button
+onclick="showTab('excel',this)"
+>
+EXCEL
+</button>
+
+<button
+onclick="showTab('backup',this)"
+>
 BACKUP
 </button>
 
 </nav>
 
+
 <main>
 
-<!-- DASHBOARD -->
 
-<section id="dashboard" class="tab active">
+<!-- ================= DASHBOARD ================= -->
+
+<section
+id="dashboard"
+class="tab active"
+>
 
 <div class="card">
 
-<h2>Dashboard</h2>
+<h2>📊 Dashboard</h2>
 
 <div class="stat">
 
@@ -329,7 +419,7 @@ Removed
 
 <div>
 <b id="sTotalKM">0</b>
-Total KM
+Total Tyre KM
 </div>
 
 </div>
@@ -339,7 +429,7 @@ Total KM
 
 <div class="card">
 
-<h2>Currently Fitted Tyres</h2>
+<h2>🛞 Currently Fitted Tyres</h2>
 
 <div class="tablewrap">
 
@@ -348,6 +438,7 @@ Total KM
 <thead>
 
 <tr>
+
 <th>Tyre No</th>
 <th>Bus</th>
 <th>Position</th>
@@ -355,6 +446,7 @@ Total KM
 <th>Fit KM</th>
 <th>Progressive KM</th>
 <th>Total KM</th>
+
 </tr>
 
 </thead>
@@ -370,13 +462,17 @@ Total KM
 </section>
 
 
-<!-- BUS MASTER -->
 
-<section id="bus" class="tab">
+<!-- ================= BUS ================= -->
+
+<section
+id="bus"
+class="tab"
+>
 
 <div class="card">
 
-<h2>BUS MASTER</h2>
+<h2>🚌 BUS MASTER</h2>
 
 <div class="grid">
 
@@ -397,7 +493,7 @@ placeholder="1 અથવા BUS-01"
 class="btn primary"
 onclick="addBus()"
 >
-ADD BUS
+➕ ADD BUS
 </button>
 
 <button
@@ -408,13 +504,16 @@ BUS 1 TO 75
 </button>
 
 <button
-class="btn orange"
+class="btn red"
 onclick="clearBuses()"
 >
 CLEAR BUS
 </button>
 
-<div id="busMsg" class="msg"></div>
+<div
+id="busMsg"
+class="msg"
+></div>
 
 <div class="tablewrap">
 
@@ -440,13 +539,17 @@ CLEAR BUS
 </section>
 
 
-<!-- TYRE MASTER -->
 
-<section id="tyre" class="tab">
+<!-- ================= TYRE MASTER ================= -->
+
+<section
+id="tyre"
+class="tab"
+>
 
 <div class="card">
 
-<h2>TYRE MASTER</h2>
+<h2>🛞 TYRE MASTER</h2>
 
 <div class="grid">
 
@@ -456,7 +559,7 @@ CLEAR BUS
 
 <input
 id="tyreNo"
-placeholder="Tyre Number"
+placeholder="Example T-001"
 >
 
 </div>
@@ -512,14 +615,13 @@ value="0"
 class="btn primary"
 onclick="saveTyre()"
 >
-ADD TYRE
+➕ ADD TYRE
 </button>
 
-<div id="tyreMsg" class="msg"></div>
-
-<p class="small">
-Tyre Number unique રહેશે. Fit KMથી Progressive KM શરૂ થશે.
-</p>
+<div
+id="tyreMsg"
+class="msg"
+></div>
 
 
 <div class="tablewrap">
@@ -529,6 +631,7 @@ Tyre Number unique રહેશે. Fit KMથી Progressive KM શરૂ થશ
 <thead>
 
 <tr>
+
 <th>Tyre No</th>
 <th>Bus</th>
 <th>Position</th>
@@ -538,6 +641,7 @@ Tyre Number unique રહેશે. Fit KMથી Progressive KM શરૂ થશ
 <th>Total KM</th>
 <th>Status</th>
 <th>Action</th>
+
 </tr>
 
 </thead>
@@ -553,13 +657,17 @@ Tyre Number unique રહેશે. Fit KMથી Progressive KM શરૂ થશ
 </section>
 
 
-<!-- TYRE ENTRY -->
 
-<section id="entry" class="tab">
+<!-- ================= TYRE ENTRY ================= -->
+
+<section
+id="entry"
+class="tab"
+>
 
 <div class="card">
 
-<h2>TYRE FIT / REMOVE ENTRY</h2>
+<h2>🔧 TYRE FIT / REMOVE ENTRY</h2>
 
 <div class="grid">
 
@@ -644,7 +752,10 @@ onclick="saveEntry()"
 SAVE ENTRY
 </button>
 
-<div id="entryMsg" class="msg"></div>
+<div
+id="entryMsg"
+class="msg"
+></div>
 
 
 <div class="tablewrap">
@@ -654,12 +765,14 @@ SAVE ENTRY
 <thead>
 
 <tr>
+
 <th>Date</th>
 <th>Tyre</th>
 <th>Action</th>
 <th>Bus</th>
 <th>Position</th>
 <th>KM</th>
+
 </tr>
 
 </thead>
@@ -675,13 +788,17 @@ SAVE ENTRY
 </section>
 
 
-<!-- DAILY KM -->
 
-<section id="km" class="tab">
+<!-- ================= DAILY KM ================= -->
+
+<section
+id="km"
+class="tab"
+>
 
 <div class="card">
 
-<h2>DAILY BUS KM</h2>
+<h2>📈 DAILY BUS KM</h2>
 
 <div class="grid">
 
@@ -726,13 +843,20 @@ placeholder="Daily KM"
 class="btn primary"
 onclick="saveDailyKm()"
 >
-ADD DAILY KM
+➕ ADD DAILY KM
 </button>
 
-<div id="kmMsg" class="msg"></div>
+<div
+id="kmMsg"
+class="msg"
+></div>
+
 
 <p class="small">
-Daily KM add થતાં તે Bus પર currently FITTED બધા tyresમાં KM automatic add થશે.
+
+Daily KM add થતાં તે Bus પર currently FITTED
+બધા Tyre ના Progressive KM automatic વધશે.
+
 </p>
 
 
@@ -743,10 +867,12 @@ Daily KM add થતાં તે Bus પર currently FITTED બધા tyresમ�
 <thead>
 
 <tr>
+
 <th>Date</th>
 <th>Bus</th>
 <th>Daily KM</th>
 <th>Action</th>
+
 </tr>
 
 </thead>
@@ -762,13 +888,21 @@ Daily KM add થતાં તે Bus પર currently FITTED બધા tyresમ�
 </section>
 
 
-<!-- REPORT -->
 
-<section id="report" class="tab">
+<!-- ================= REPORT ================= -->
+
+<section
+id="report"
+class="tab"
+>
 
 <div class="card">
 
-<h2>TYRE REPORT</h2>
+<h2>📋 TYRE REPORT</h2>
+
+<div
+class="no-print"
+>
 
 <div class="grid">
 
@@ -825,9 +959,26 @@ placeholder="Tyre Number"
 </div>
 
 
+<button
+class="btn primary"
+onclick="printReport()"
+>
+🖨️ PRINT REPORT
+</button>
+
+<button
+class="btn green"
+onclick="exportCSV()"
+>
+📤 EXPORT CSV
+</button>
+
+</div>
+
+
 <div class="tablewrap">
 
-<table>
+<table id="reportTable">
 
 <thead>
 
@@ -858,20 +1009,129 @@ placeholder="Tyre Number"
 </section>
 
 
-<!-- BACKUP -->
 
-<section id="backup" class="tab">
+<!-- ================= EXCEL ================= -->
+
+<section
+id="excel"
+class="tab"
+>
 
 <div class="card">
 
-<h2>BACKUP / RESTORE</h2>
+<h2>📊 EXCEL IMPORT / EXPORT</h2>
+
+
+<div class="importbox">
+
+<h3>📥 Excel Import</h3>
+
+<p>
+તમારી Excel file પસંદ કરો.
+</p>
+
+<input
+type="file"
+id="excelFile"
+accept=".xlsx,.xls,.csv"
+>
+
+
+<br>
+
+
+<button
+class="btn primary"
+onclick="importExcel()"
+>
+📥 IMPORT EXCEL
+</button>
+
+</div>
+
+
+<br>
+
+
+<div>
+
+<h3>📤 Excel Export</h3>
+
+<button
+class="btn green"
+onclick="exportExcel()"
+>
+📤 EXPORT EXCEL
+</button>
+
+<button
+class="btn gray"
+onclick="downloadExcelFormat()"
+>
+📄 DOWNLOAD EXCEL FORMAT
+</button>
+
+</div>
+
+
+<br>
+
+
+<button
+class="btn purple"
+onclick="printReport()"
+>
+🖨️ PRINT TYRE REPORT
+</button>
+
+
+<div
+id="excelMsg"
+class="msg"
+></div>
+
+
+<p class="small">
+
+Excel Columns:
+
+Tyre No,
+Bus,
+Position,
+Fit Date,
+Fit KM,
+Progressive KM,
+Remove Date,
+Remove KM,
+Status
+
+</p>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= BACKUP ================= -->
+
+<section
+id="backup"
+class="tab"
+>
+
+<div class="card">
+
+<h2>💾 BACKUP / RESTORE</h2>
+
 
 <button
 class="btn green"
 onclick="exportJSON()"
 >
-DOWNLOAD BACKUP
+💾 DOWNLOAD BACKUP
 </button>
+
 
 <input
 id="jsonFile"
@@ -880,30 +1140,21 @@ accept=".json"
 onchange="importJSON(event)"
 >
 
-<button
-class="btn primary"
-onclick="exportCSV()"
->
-EXPORT TYRE CSV
-</button>
 
 <button
 class="btn red"
 onclick="clearAll()"
 >
-CLEAR ALL DATA
+⚠️ CLEAR ALL DATA
 </button>
 
-<p class="small">
-Backupમાં Bus, Tyre, Daily KM અને Fit/Remove History save થશે.
-</p>
 
 </div>
 
 
 <div class="card">
 
-<h2>POSITION MASTER</h2>
+<h2>🔧 POSITION MASTER</h2>
 
 <div class="grid">
 
@@ -913,19 +1164,21 @@ Backupમાં Bus, Tyre, Daily KM અને Fit/Remove History save થશે.
 
 <input
 id="newPos"
-placeholder="જેમ કે NRO"
+placeholder="Example NRO"
 >
 
 </div>
 
 </div>
+
 
 <button
 class="btn primary"
 onclick="addPosition()"
 >
-ADD POSITION
+➕ ADD POSITION
 </button>
+
 
 <div id="posList"></div>
 
@@ -936,14 +1189,16 @@ ADD POSITION
 </main>
 
 
+
 <script>
 
-/* =========================
+
+/* =====================================================
 DATABASE
-========================= */
+===================================================== */
 
 const STORAGE_KEY =
-"GSRTC_TYRE_MANAGEMENT_V2";
+"GSRTC_TYRE_MANAGEMENT_V5";
 
 
 let db =
@@ -971,9 +1226,9 @@ entries:[]
 };
 
 
-/* =========================
+/* =====================================================
 SAVE
-========================= */
+===================================================== */
 
 function saveDB(){
 
@@ -987,9 +1242,9 @@ renderAll();
 }
 
 
-/* =========================
+/* =====================================================
 TODAY
-========================= */
+===================================================== */
 
 function today(){
 
@@ -1000,14 +1255,16 @@ return new Date()
 }
 
 
-/* =========================
+/* =====================================================
 ESCAPE
-========================= */
+===================================================== */
 
 function esc(value){
 
 return String(value ?? "")
-.replace(/[&<>"']/g,function(m){
+.replace(
+/[&<>"']/g,
+function(m){
 
 return {
 
@@ -1019,14 +1276,15 @@ return {
 
 }[m];
 
-});
+}
+);
 
 }
 
 
-/* =========================
+/* =====================================================
 MESSAGE
-========================= */
+===================================================== */
 
 function showMessage(
 id,
@@ -1051,17 +1309,20 @@ function(){
 el.style.display="none";
 
 },
-2500
+3000
 );
 
 }
 
 
-/* =========================
+/* =====================================================
 TAB
-========================= */
+===================================================== */
 
-function showTab(id,button){
+function showTab(
+id,
+button
+){
 
 document
 .querySelectorAll(".tab")
@@ -1072,6 +1333,7 @@ x=>x.classList.remove("active")
 document
 .getElementById(id)
 .classList.add("active");
+
 
 document
 .querySelectorAll("nav button")
@@ -1086,9 +1348,9 @@ renderAll();
 }
 
 
-/* =========================
+/* =====================================================
 BUS SORT
-========================= */
+===================================================== */
 
 function sortBus(a,b){
 
@@ -1096,23 +1358,31 @@ return String(a)
 .localeCompare(
 String(b),
 undefined,
-{numeric:true}
+{
+numeric:true
+}
 );
 
 }
 
 
-/* =========================
-BUS 1 TO 75
-========================= */
+/* =====================================================
+DEFAULT BUS 1-75
+===================================================== */
 
 function defaultBuses(){
 
-for(let i=1;i<=75;i++){
+for(
+let i=1;
+i<=75;
+i++
+){
 
 let n=String(i);
 
-if(!db.buses.includes(n)){
+if(
+!db.buses.includes(n)
+){
 
 db.buses.push(n);
 
@@ -1132,9 +1402,9 @@ showMessage(
 }
 
 
-/* =========================
+/* =====================================================
 ADD BUS
-========================= */
+===================================================== */
 
 function addBus(){
 
@@ -1143,6 +1413,7 @@ document
 .getElementById("busNo")
 .value
 .trim();
+
 
 if(!n){
 
@@ -1156,7 +1427,10 @@ return;
 
 }
 
-if(db.buses.includes(n)){
+
+if(
+db.buses.includes(n)
+){
 
 showMessage(
 "busMsg",
@@ -1168,6 +1442,7 @@ return;
 
 }
 
+
 db.buses.push(n);
 
 db.buses.sort(sortBus);
@@ -1175,6 +1450,7 @@ db.buses.sort(sortBus);
 document
 .getElementById("busNo")
 .value="";
+
 
 saveDB();
 
@@ -1186,20 +1462,21 @@ showMessage(
 }
 
 
-/* =========================
+/* =====================================================
 DELETE BUS
-========================= */
+===================================================== */
 
 function deleteBus(bus){
 
-let activeTyre =
+const active =
 db.tyres.some(
-t =>
+t=>
 t.bus===bus &&
 t.status==="FITTED"
 );
 
-if(activeTyre){
+
+if(active){
 
 alert(
 "આ Bus પર fitted tyre છે.\nપહેલા tyre remove કરો."
@@ -1209,9 +1486,11 @@ return;
 
 }
 
+
 if(
 confirm(
-"Bus "+bus+" delete કરવો?"
+"Bus "+bus+
+" delete કરવો?"
 )
 ){
 
@@ -1227,9 +1506,9 @@ saveDB();
 }
 
 
-/* =========================
+/* =====================================================
 CLEAR BUS
-========================= */
+===================================================== */
 
 function clearBuses(){
 
@@ -1248,9 +1527,9 @@ saveDB();
 }
 
 
-/* =========================
+/* =====================================================
 OPTIONS
-========================= */
+===================================================== */
 
 function makeOptions(
 arr,
@@ -1259,11 +1538,15 @@ selected=""
 
 return arr
 .map(
-x =>
+x=>
 
 `<option
 value="${esc(x)}"
-${String(x)===String(selected)?"selected":""}
+${
+String(x)===String(selected)
+?"selected"
+:""
+}
 >
 ${esc(x)}
 </option>`
@@ -1274,9 +1557,9 @@ ${esc(x)}
 }
 
 
-/* =========================
-POPULATE SELECTS
-========================= */
+/* =====================================================
+POPULATE SELECT
+===================================================== */
 
 function populateSelects(){
 
@@ -1287,6 +1570,7 @@ const busIds=[
 "reportBus"
 ];
 
+
 busIds.forEach(
 function(id){
 
@@ -1296,12 +1580,15 @@ document.getElementById(id);
 const old =
 el.value;
 
+
 el.innerHTML =
-'<option value="">-- Select Bus --</option>' +
+'<option value="">-- Select Bus --</option>'
++
 makeOptions(
 db.buses,
 old
 );
+
 
 el.value=old;
 
@@ -1309,10 +1596,13 @@ el.value=old;
 
 
 const tyrePos =
-document.getElementById("tyrePos");
+document.getElementById(
+"tyrePos"
+);
 
 let oldPos =
 tyrePos.value;
+
 
 tyrePos.innerHTML =
 makeOptions(
@@ -1322,10 +1612,13 @@ oldPos
 
 
 const entryPos =
-document.getElementById("entryPos");
+document.getElementById(
+"entryPos"
+);
 
 oldPos =
 entryPos.value;
+
 
 entryPos.innerHTML =
 makeOptions(
@@ -1334,52 +1627,64 @@ oldPos
 );
 
 
-/* TYRE SELECT */
+/* TYRE */
 
 const entryTyre =
-document.getElementById("entryTyre");
+document.getElementById(
+"entryTyre"
+);
 
-let oldTyre =
+const oldTyre =
 entryTyre.value;
 
-entryTyre.innerHTML =
-'<option value="">-- Select Tyre --</option>' +
 
+entryTyre.innerHTML =
+'<option value="">-- Select Tyre --</option>'
++
 db.tyres
 .map(
 t=>
+
 `<option
 value="${esc(t.no)}"
 >
 ${esc(t.no)}
  - ${esc(t.status)}
 </option>`
+
 )
 .join("");
 
-entryTyre.value=oldTyre;
+
+entryTyre.value =
+oldTyre;
 
 }
 
 
-/* =========================
+/* =====================================================
 TOTAL TYRE KM
-========================= */
+===================================================== */
 
 function totalTyreKm(t){
 
 return Math.max(
 0,
-(Number(t.progressive)||0) -
-(Number(t.fitKm)||0)
+(
+Number(t.progressive)||0
+)
+-
+(
+Number(t.fitKm)||0
+)
 );
 
 }
 
 
-/* =========================
+/* =====================================================
 ADD TYRE
-========================= */
+===================================================== */
 
 function saveTyre(){
 
@@ -1410,7 +1715,8 @@ Number(
 document
 .getElementById("fitKm")
 .value
-) || 0;
+)
+||0;
 
 
 if(!no){
@@ -1454,10 +1760,12 @@ return;
 
 const duplicate =
 db.tyres.some(
-t =>
-t.no.toLowerCase() ===
+t=>
+t.no.toLowerCase()
+===
 no.toLowerCase()
 );
+
 
 if(duplicate){
 
@@ -1474,7 +1782,8 @@ return;
 
 db.tyres.push({
 
-id:Date.now(),
+id:
+Date.now(),
 
 no:no,
 
@@ -1530,9 +1839,9 @@ showMessage(
 }
 
 
-/* =========================
+/* =====================================================
 REMOVE TYRE
-========================= */
+===================================================== */
 
 function removeTyre(id){
 
@@ -1541,6 +1850,7 @@ db.tyres.find(
 t=>t.id===id
 );
 
+
 if(!tyre){
 
 return;
@@ -1548,7 +1858,9 @@ return;
 }
 
 
-if(tyre.status==="REMOVED"){
+if(
+tyre.status==="REMOVED"
+){
 
 return;
 
@@ -1569,7 +1881,8 @@ return;
 
 tyre.status="REMOVED";
 
-tyre.removeDate=today();
+tyre.removeDate=
+today();
 
 tyre.removeKm=
 tyre.progressive;
@@ -1577,17 +1890,23 @@ tyre.progressive;
 
 db.entries.push({
 
-date:tyre.removeDate,
+date:
+tyre.removeDate,
 
-tyre:tyre.no,
+tyre:
+tyre.no,
 
-action:"REMOVE",
+action:
+"REMOVE",
 
-bus:tyre.bus,
+bus:
+tyre.bus,
 
-pos:tyre.pos,
+pos:
+tyre.pos,
 
-km:tyre.removeKm
+km:
+tyre.removeKm
 
 });
 
@@ -1603,43 +1922,56 @@ showMessage(
 }
 
 
-/* =========================
-FIT / REMOVE ENTRY
-========================= */
+/* =====================================================
+FIT REMOVE ENTRY
+===================================================== */
 
 function saveEntry(){
 
 const no =
 document
-.getElementById("entryTyre")
+.getElementById(
+"entryTyre"
+)
 .value;
 
 const action =
 document
-.getElementById("entryAction")
+.getElementById(
+"entryAction"
+)
 .value;
 
 const date =
 document
-.getElementById("entryDate")
+.getElementById(
+"entryDate"
+)
 .value ||
 today();
 
 const km =
 Number(
 document
-.getElementById("entryKm")
+.getElementById(
+"entryKm"
+)
 .value
-) || 0;
+)
+||0;
 
 const bus =
 document
-.getElementById("entryBus")
+.getElementById(
+"entryBus"
+)
 .value;
 
 const pos =
 document
-.getElementById("entryPos")
+.getElementById(
+"entryPos"
+)
 .value;
 
 
@@ -1664,9 +1996,13 @@ return;
 
 /* REMOVE */
 
-if(action==="REMOVE"){
+if(
+action==="REMOVE"
+){
 
-if(tyre.status==="REMOVED"){
+if(
+tyre.status==="REMOVED"
+){
 
 showMessage(
 "entryMsg",
@@ -1711,7 +2047,9 @@ km:km
 
 else{
 
-if(tyre.status==="FITTED"){
+if(
+tyre.status==="FITTED"
+){
 
 showMessage(
 "entryMsg",
@@ -1784,9 +2122,9 @@ showMessage(
 }
 
 
-/* =========================
+/* =====================================================
 DAILY KM
-========================= */
+===================================================== */
 
 function saveDailyKm(){
 
@@ -1838,15 +2176,9 @@ return;
 }
 
 
-/*
-જો એ જ Date + Bus પહેલેથી હોય
-તો old KM અને new KM વચ્ચેનો difference
-tyre માં add થાય છે.
-*/
-
 const old =
 db.kms.find(
-x =>
+x=>
 x.date===date &&
 x.bus===bus
 );
@@ -1855,9 +2187,12 @@ x.bus===bus
 if(old){
 
 const difference =
-km - Number(old.km);
+km -
+Number(old.km);
+
 
 old.km=km;
+
 
 applyBusDifference(
 bus,
@@ -1890,7 +2225,9 @@ km
 
 
 document
-.getElementById("dailyKm")
+.getElementById(
+"dailyKm"
+)
 .value="";
 
 
@@ -1905,9 +2242,9 @@ showMessage(
 }
 
 
-/* =========================
-APPLY BUS KM
-========================= */
+/* =====================================================
+APPLY DAILY KM
+===================================================== */
 
 function applyBusDifference(
 bus,
@@ -1916,17 +2253,19 @@ difference
 
 db.tyres
 .filter(
-t =>
+t=>
 t.bus===bus &&
 t.status==="FITTED"
 )
 .forEach(
-t => {
+t=>{
 
-t.progressive =
+t.progressive=
 Math.max(
 Number(t.fitKm)||0,
-(Number(t.progressive)||0)
+(
+Number(t.progressive)||0
+)
 +
 Number(difference)
 );
@@ -1936,14 +2275,15 @@ Number(difference)
 }
 
 
-/* =========================
+/* =====================================================
 DELETE DAILY KM
-========================= */
+===================================================== */
 
 function deleteKm(index){
 
 const record =
 db.kms[index];
+
 
 if(!record){
 
@@ -1963,11 +2303,6 @@ return;
 }
 
 
-/*
-Delete કરતાં tyre progressiveમાંથી
-એ KM પાછું subtract થશે.
-*/
-
 applyBusDifference(
 record.bus,
 -Number(record.km)
@@ -1985,9 +2320,9 @@ saveDB();
 }
 
 
-/* =========================
-RENDER BUS
-========================= */
+/* =====================================================
+BUS TABLE
+===================================================== */
 
 function renderBus(){
 
@@ -1996,9 +2331,12 @@ document.getElementById(
 "busRows"
 );
 
-if(db.buses.length===0){
 
-body.innerHTML =
+if(
+db.buses.length===0
+){
+
+body.innerHTML=
 '<tr><td colspan="2" class="empty">No Bus</td></tr>';
 
 return;
@@ -2009,7 +2347,7 @@ return;
 body.innerHTML =
 db.buses
 .map(
-bus =>
+bus=>
 
 `<tr>
 
@@ -2036,9 +2374,9 @@ DELETE
 }
 
 
-/* =========================
-RENDER TYRES
-========================= */
+/* =====================================================
+TYRE TABLE
+===================================================== */
 
 function renderTyres(){
 
@@ -2048,9 +2386,11 @@ document.getElementById(
 );
 
 
-if(db.tyres.length===0){
+if(
+db.tyres.length===0
+){
 
-body.innerHTML =
+body.innerHTML=
 '<tr><td colspan="9" class="empty">No Tyre</td></tr>';
 
 return;
@@ -2061,7 +2401,7 @@ return;
 body.innerHTML =
 db.tyres
 .map(
-t =>
+t=>
 
 `<tr>
 
@@ -2069,13 +2409,21 @@ t =>
 <b>${esc(t.no)}</b>
 </td>
 
-<td>${esc(t.bus)}</td>
+<td>
+${esc(t.bus)}
+</td>
 
-<td>${esc(t.pos)}</td>
+<td>
+${esc(t.pos)}
+</td>
 
-<td>${esc(t.fitDate)}</td>
+<td>
+${esc(t.fitDate)}
+</td>
 
-<td>${t.fitKm}</td>
+<td>
+${t.fitKm}
+</td>
 
 <td>
 <b>${t.progressive}</b>
@@ -2087,11 +2435,13 @@ t =>
 
 <td>
 
-<span class="badge ${
+<span
+class="badge ${
 t.status==="FITTED"
 ?"fitted"
 :"removed"
-}">
+}"
+>
 
 ${t.status}
 
@@ -2129,9 +2479,9 @@ REMOVE
 }
 
 
-/* =========================
-RENDER DAILY KM
-========================= */
+/* =====================================================
+KM TABLE
+===================================================== */
 
 function renderKms(){
 
@@ -2141,9 +2491,11 @@ document.getElementById(
 );
 
 
-if(db.kms.length===0){
+if(
+db.kms.length===0
+){
 
-body.innerHTML =
+body.innerHTML=
 '<tr><td colspan="4" class="empty">No KM Record</td></tr>';
 
 return;
@@ -2156,20 +2508,24 @@ db.kms
 .slice()
 .reverse()
 .map(
-(r,reverseIndex)=>{
+(r,ri)=>{
 
 const index =
-db.kms.length -
-1 -
-reverseIndex;
+db.kms.length-
+1-ri;
+
 
 return `
 
 <tr>
 
-<td>${esc(r.date)}</td>
+<td>
+${esc(r.date)}
+</td>
 
-<td>${esc(r.bus)}</td>
+<td>
+${esc(r.bus)}
+</td>
 
 <td>
 <b>${r.km}</b>
@@ -2197,9 +2553,9 @@ DELETE
 }
 
 
-/* =========================
-RENDER ENTRIES
-========================= */
+/* =====================================================
+ENTRY TABLE
+===================================================== */
 
 function renderEntries(){
 
@@ -2209,9 +2565,11 @@ document.getElementById(
 );
 
 
-if(db.entries.length===0){
+if(
+db.entries.length===0
+){
 
-body.innerHTML =
+body.innerHTML=
 '<tr><td colspan="6" class="empty">No Entry</td></tr>';
 
 return;
@@ -2224,7 +2582,7 @@ db.entries
 .slice()
 .reverse()
 .map(
-e =>
+e=>
 
 `<tr>
 
@@ -2250,36 +2608,47 @@ e =>
 }
 
 
-/* =========================
+/* =====================================================
 REPORT
-========================= */
+===================================================== */
 
 function renderReport(){
 
 const bus =
 document
-.getElementById("reportBus")
+.getElementById(
+"reportBus"
+)
 .value;
 
 const status =
 document
-.getElementById("reportStatus")
+.getElementById(
+"reportStatus"
+)
 .value;
 
 const search =
 document
-.getElementById("reportSearch")
+.getElementById(
+"reportSearch"
+)
 .value
 .toLowerCase();
 
 
 const records =
 db.tyres.filter(
-t =>
+t=>
 
-(!bus || t.bus===bus) &&
+(!bus || t.bus===bus)
 
-(!status || t.status===status) &&
+&&
+
+(!status ||
+t.status===status)
+
+&&
 
 (!search ||
 t.no
@@ -2295,9 +2664,11 @@ document.getElementById(
 );
 
 
-if(records.length===0){
+if(
+records.length===0
+){
 
-body.innerHTML =
+body.innerHTML=
 '<tr><td colspan="9" class="empty">No Record</td></tr>';
 
 return;
@@ -2308,27 +2679,45 @@ return;
 body.innerHTML =
 records
 .map(
-t =>
+t=>
 
 `<tr>
 
-<td><b>${esc(t.no)}</b></td>
+<td>
+<b>${esc(t.no)}</b>
+</td>
 
-<td>${esc(t.bus)}</td>
+<td>
+${esc(t.bus)}
+</td>
 
-<td>${esc(t.pos)}</td>
+<td>
+${esc(t.pos)}
+</td>
 
-<td>${esc(t.fitDate)}</td>
+<td>
+${esc(t.fitDate)}
+</td>
 
-<td>${esc(t.removeDate)}</td>
+<td>
+${esc(t.removeDate)}
+</td>
 
-<td>${t.fitKm}</td>
+<td>
+${t.fitKm}
+</td>
 
-<td><b>${t.progressive}</b></td>
+<td>
+<b>${t.progressive}</b>
+</td>
 
-<td><b>${totalTyreKm(t)}</b></td>
+<td>
+<b>${totalTyreKm(t)}</b>
+</td>
 
-<td>${t.status}</td>
+<td>
+${t.status}
+</td>
 
 </tr>`
 
@@ -2338,9 +2727,9 @@ t =>
 }
 
 
-/* =========================
+/* =====================================================
 DASHBOARD
-========================= */
+===================================================== */
 
 function renderDashboard(){
 
@@ -2355,12 +2744,15 @@ t=>t.status==="REMOVED"
 );
 
 
-let totalKm=0;
+let total=0;
+
 
 db.tyres.forEach(
 t=>{
-totalKm +=
+
+total +=
 totalTyreKm(t);
+
 });
 
 
@@ -2391,7 +2783,7 @@ removed.length;
 document
 .getElementById("sTotalKM")
 .textContent =
-totalKm;
+total;
 
 
 const body =
@@ -2400,9 +2792,11 @@ document.getElementById(
 );
 
 
-if(fitted.length===0){
+if(
+fitted.length===0
+){
 
-body.innerHTML =
+body.innerHTML=
 '<tr><td colspan="7" class="empty">No fitted tyre</td></tr>';
 
 return;
@@ -2413,7 +2807,7 @@ return;
 body.innerHTML =
 fitted
 .map(
-t =>
+t=>
 
 `<tr>
 
@@ -2427,9 +2821,13 @@ t =>
 
 <td>${t.fitKm}</td>
 
-<td><b>${t.progressive}</b></td>
+<td>
+<b>${t.progressive}</b>
+</td>
 
-<td><b>${totalTyreKm(t)}</b></td>
+<td>
+<b>${totalTyreKm(t)}</b>
+</td>
 
 </tr>`
 
@@ -2439,15 +2837,17 @@ t =>
 }
 
 
-/* =========================
-POSITION ADD
-========================= */
+/* =====================================================
+POSITION
+===================================================== */
 
 function addPosition(){
 
 const p =
 document
-.getElementById("newPos")
+.getElementById(
+"newPos"
+)
 .value
 .trim();
 
@@ -2475,7 +2875,9 @@ return;
 db.positions.push(p);
 
 document
-.getElementById("newPos")
+.getElementById(
+"newPos"
+)
 .value="";
 
 
@@ -2483,10 +2885,6 @@ saveDB();
 
 }
 
-
-/* =========================
-POSITION DELETE
-========================= */
 
 function deletePosition(p){
 
@@ -2509,10 +2907,6 @@ saveDB();
 }
 
 
-/* =========================
-POSITION LIST
-========================= */
-
 function renderPositions(){
 
 const el =
@@ -2524,7 +2918,7 @@ document.getElementById(
 el.innerHTML =
 db.positions
 .map(
-p =>
+p=>
 
 `<span class="position">
 
@@ -2544,65 +2938,1078 @@ onclick="deletePosition('${esc(p)}')"
 }
 
 
-/* =========================
-JSON BACKUP
-========================= */
+/* =====================================================
+EXCEL VALUE HELPER
+===================================================== */
 
-function downloadFile(
-filename,
-data,
-type
+function getExcelValue(
+row,
+names
 ){
 
-const blob =
-new Blob(
-[data],
-{type:type}
+for(
+let i=0;
+i<names.length;
+i++
+){
+
+const key =
+Object.keys(row)
+.find(
+k=>
+String(k)
+.trim()
+.toLowerCase()
+===
+names[i]
+.trim()
+.toLowerCase()
 );
 
 
-const url =
-URL.createObjectURL(blob);
+if(
+key !== undefined
+&&
+row[key] !== ""
+){
+
+return row[key];
+
+}
+
+}
+
+return "";
+
+}
+
+
+/* =====================================================
+NUMBER HELPER
+===================================================== */
+
+function numberValue(value){
+
+if(
+value === "" ||
+value === null ||
+value === undefined
+){
+
+return 0;
+
+}
+
+
+const n =
+Number(
+String(value)
+.replace(/,/g,"")
+.trim()
+);
+
+
+return Number.isFinite(n)
+?n
+:0;
+
+}
+
+
+/* =====================================================
+EXCEL DATE
+===================================================== */
+
+function excelDate(value){
+
+if(!value){
+
+return "";
+
+}
+
+
+if(
+Object.prototype.toString
+.call(value)
+===
+"[object Date]"
+){
+
+if(
+!isNaN(value.getTime())
+){
+
+return formatDate(value);
+
+}
+
+}
+
+
+if(
+typeof value === "number"
+&&
+typeof XLSX !== "undefined"
+){
+
+const d =
+XLSX.SSF
+.parse_date_code(value);
+
+
+if(d){
+
+return String(d.d)
+.padStart(2,"0")
++
+"-"
++
+String(d.m)
+.padStart(2,"0")
++
+"-"
++
+d.y;
+
+}
+
+}
+
+
+let s =
+String(value)
+.trim();
+
+
+if(!s){
+
+return "";
+
+}
+
+
+/* DD-MM-YYYY */
+
+let m =
+s.match(
+/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/
+);
+
+
+if(m){
+
+return (
+String(m[1]).padStart(2,"0")
++
+"-"
++
+String(m[2]).padStart(2,"0")
++
+"-"
++
+m[3]
+);
+
+}
+
+
+/* YYYY-MM-DD */
+
+m =
+s.match(
+/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/
+);
+
+
+if(m){
+
+return (
+String(m[3]).padStart(2,"0")
++
+"-"
++
+String(m[2]).padStart(2,"0")
++
+"-"
++
+m[1]
+);
+
+}
+
+
+return s;
+
+}
+
+
+/* =====================================================
+FORMAT DATE
+===================================================== */
+
+function formatDate(d){
+
+return (
+String(
+d.getDate()
+).padStart(2,"0")
++
+"-"
++
+String(
+d.getMonth()+1
+).padStart(2,"0")
++
+"-"
++
+d.getFullYear()
+);
+
+}
+
+
+/* =====================================================
+EXCEL IMPORT
+===================================================== */
+
+function importExcel(){
+
+const file =
+document
+.getElementById(
+"excelFile"
+)
+.files[0];
+
+
+if(!file){
+
+showMessage(
+"excelMsg",
+"પહેલા Excel file પસંદ કરો",
+false
+);
+
+return;
+
+}
+
+
+if(
+typeof XLSX === "undefined"
+){
+
+showMessage(
+"excelMsg",
+"Excel library load થઈ નથી. Internet ચાલુ રાખો.",
+false
+);
+
+return;
+
+}
+
+
+const reader =
+new FileReader();
+
+
+reader.onload =
+function(e){
+
+try{
+
+const workbook =
+XLSX.read(
+e.target.result,
+{
+type:"array",
+cellDates:true
+}
+);
+
+
+let imported=0;
+
+let updated=0;
+
+
+workbook
+.SheetNames
+.forEach(
+function(sheetName){
+
+const sheet =
+workbook.Sheets[
+sheetName
+];
+
+
+const rows =
+XLSX.utils
+.sheet_to_json(
+sheet,
+{
+defval:""
+}
+);
+
+
+rows.forEach(
+function(row){
+
+let tyreNo =
+getExcelValue(
+row,
+[
+"Tyre No",
+"TYRE NO",
+"Tyre Number",
+"TYRE NUMBER",
+"Tyre"
+]
+);
+
+
+if(!tyreNo){
+
+return;
+
+}
+
+
+tyreNo =
+String(
+tyreNo
+)
+.trim();
+
+
+let bus =
+getExcelValue(
+row,
+[
+"Bus",
+"BUS",
+"Bus No",
+"BUS NO"
+]
+);
+
+
+bus =
+String(
+bus ||
+sheetName
+)
+.trim();
+
+
+let position =
+getExcelValue(
+row,
+[
+"Position",
+"POSITION",
+"Pos",
+"TYRE POSITION"
+]
+);
+
+
+position =
+String(
+position||""
+)
+.trim();
+
+
+let fitDate =
+getExcelValue(
+row,
+[
+"Fit Date",
+"FIT DATE",
+"Fitting Date"
+]
+);
+
+
+let fitKm =
+numberValue(
+getExcelValue(
+row,
+[
+"Fit KM",
+"FIT KM",
+"Starting KM",
+"Start KM"
+]
+)
+);
+
+
+let progressive =
+numberValue(
+getExcelValue(
+row,
+[
+"Progressive KM",
+"PROGRESSIVE KM",
+"Current KM",
+"CURRENT KM"
+]
+)
+);
+
+
+let removeDate =
+getExcelValue(
+row,
+[
+"Remove Date",
+"REMOVE DATE",
+"Removal Date"
+]
+);
+
+
+let removeKm =
+numberValue(
+getExcelValue(
+row,
+[
+"Remove KM",
+"REMOVE KM",
+"Removal KM"
+]
+)
+);
+
+
+let status =
+getExcelValue(
+row,
+[
+"Status",
+"STATUS"
+]
+);
+
+
+status =
+String(
+status ||
+"FITTED"
+)
+.trim()
+.toUpperCase();
+
+
+if(
+status!=="REMOVED"
+){
+
+status="FITTED";
+
+}
+
+
+fitDate =
+excelDate(
+fitDate
+);
+
+
+removeDate =
+excelDate(
+removeDate
+);
+
+
+if(
+!progressive
+&&
+fitKm
+){
+
+progressive=fitKm;
+
+}
+
+
+/* BUS AUTO ADD */
+
+if(
+bus &&
+!db.buses.includes(bus)
+){
+
+db.buses.push(bus);
+
+}
+
+
+/* POSITION AUTO ADD */
+
+if(
+position &&
+!db.positions.includes(position)
+){
+
+db.positions.push(
+position
+);
+
+}
+
+
+/* FIND EXISTING */
+
+let existing =
+db.tyres.find(
+t=>
+t.no.toLowerCase()
+===
+tyreNo.toLowerCase()
+);
+
+
+if(existing){
+
+existing.bus =
+bus ||
+existing.bus;
+
+existing.pos =
+position ||
+existing.pos;
+
+if(fitDate)
+existing.fitDate=
+fitDate;
+
+existing.fitKm=
+fitKm;
+
+if(progressive)
+existing.progressive=
+progressive;
+
+existing.removeDate=
+removeDate;
+
+existing.removeKm=
+removeKm;
+
+existing.status=
+status;
+
+updated++;
+
+}
+
+else{
+
+db.tyres.push({
+
+id:
+Date.now()+
+Math.random(),
+
+no:
+tyreNo,
+
+bus:
+bus,
+
+pos:
+position,
+
+fitDate:
+fitDate||
+today(),
+
+fitKm:
+fitKm,
+
+progressive:
+progressive||
+fitKm,
+
+removeDate:
+removeDate||"",
+
+removeKm:
+removeKm,
+
+status:
+status
+
+});
+
+
+imported++;
+
+}
+
+});
+
+});
+
+db.buses.sort(sortBus);
+
+saveDB();
+
+
+showMessage(
+"excelMsg",
+"Excel Import સફળ! New: "
++
+imported
++
+" | Updated: "
++
+updated
+);
+
+}
+
+catch(error){
+
+console.error(error);
+
+showMessage(
+"excelMsg",
+"Excel Importમાં error આવ્યો.",
+false
+);
+
+}
+
+};
+
+
+reader.readAsArrayBuffer(file);
+
+}
+
+
+/* =====================================================
+EXCEL EXPORT
+===================================================== */
+
+function exportExcel(){
+
+if(
+typeof XLSX === "undefined"
+){
+
+alert(
+"Excel library load થઈ નથી."
+);
+
+return;
+
+}
+
+
+const rows=[
+
+[
+
+"Tyre No",
+"Bus",
+"Position",
+"Fit Date",
+"Fit KM",
+"Progressive KM",
+"Total KM",
+"Remove Date",
+"Remove KM",
+"Status"
+
+]
+
+];
+
+
+db.tyres.forEach(
+t=>{
+
+rows.push([
+
+t.no,
+
+t.bus,
+
+t.pos,
+
+t.fitDate,
+
+t.fitKm,
+
+t.progressive,
+
+totalTyreKm(t),
+
+t.removeDate,
+
+t.removeKm,
+
+t.status
+
+]);
+
+});
+
+
+const ws =
+XLSX.utils
+.aoa_to_sheet(
+rows
+);
+
+
+const wb =
+XLSX.utils
+.book_new();
+
+
+XLSX.utils
+.book_append_sheet(
+wb,
+ws,
+"TYRE"
+);
+
+
+XLSX.writeFile(
+wb,
+"GSRTC_Tyre_Report_"+
+today()+
+".xlsx"
+);
+
+}
+
+
+/* =====================================================
+DOWNLOAD EXCEL FORMAT
+===================================================== */
+
+function downloadExcelFormat(){
+
+if(
+typeof XLSX === "undefined"
+){
+
+alert(
+"Excel library load થઈ નથી."
+);
+
+return;
+
+}
+
+
+const rows=[
+
+[
+
+"Tyre No",
+"Bus",
+"Position",
+"Fit Date",
+"Fit KM",
+"Progressive KM",
+"Total KM",
+"Remove Date",
+"Remove KM",
+"Status"
+
+],
+
+[
+
+"T-001",
+"1",
+"NRO",
+"01-08-2026",
+50000,
+52500,
+2500,
+"",
+"",
+"FITTED"
+
+],
+
+[
+
+"T-002",
+"1",
+"ORO",
+"05-08-2026",
+51000,
+53000,
+2000,
+"",
+"",
+"FITTED"
+
+],
+
+[
+
+"T-003",
+"2",
+"LF",
+"10-08-2026",
+45000,
+48000,
+3000,
+"20-08-2026",
+48000,
+"REMOVED"
+
+]
+
+];
+
+
+const ws =
+XLSX.utils
+.aoa_to_sheet(
+rows
+);
+
+
+const wb =
+XLSX.utils
+.book_new();
+
+
+XLSX.utils
+.book_append_sheet(
+wb,
+ws,
+"TYRE"
+);
+
+
+XLSX.writeFile(
+wb,
+"GSRTC_Tyre_Excel_Format.xlsx"
+);
+
+}
+
+
+/* =====================================================
+CSV EXPORT
+===================================================== */
+
+function csvCell(value){
+
+return '"'+
+String(value??"")
+.replaceAll(
+'"',
+'""'
+)
++
+'"';
+
+}
+
+
+function exportCSV(){
+
+let rows=[
+
+[
+
+"Tyre No",
+"Bus",
+"Position",
+"Fit Date",
+"Fit KM",
+"Progressive KM",
+"Total KM",
+"Remove Date",
+"Remove KM",
+"Status"
+
+]
+
+];
+
+
+db.tyres.forEach(
+t=>{
+
+rows.push([
+
+t.no,
+
+t.bus,
+
+t.pos,
+
+t.fitDate,
+
+t.fitKm,
+
+t.progressive,
+
+totalTyreKm(t),
+
+t.removeDate,
+
+t.removeKm,
+
+t.status
+
+]);
+
+});
+
+
+const csv =
+"\ufeff"+
+rows
+.map(
+r=>
+r
+.map(csvCell)
+.join(",")
+)
+.join("\n");
+
+
+const blob =
+new Blob(
+[csv],
+{
+type:
+"text/csv;charset=utf-8"
+}
+);
 
 
 const a =
 document.createElement("a");
 
-a.href=url;
 
-a.download=filename;
+a.href =
+URL.createObjectURL(blob);
+
+
+a.download =
+"GSRTC_Tyre_Report_"+
+today()+
+".csv";
+
 
 a.click();
-
-URL.revokeObjectURL(url);
 
 }
 
 
-function exportJSON(){
+/* =====================================================
+PRINT
+===================================================== */
 
-downloadFile(
+function printReport(){
 
-"GSRTC_Tyre_Backup_"+
-today()+
-".json",
+const oldTab =
+document.querySelector(
+".tab.active"
+);
 
-JSON.stringify(
-db,
-null,
-2
-),
 
-"application/json"
+document
+.querySelectorAll(".tab")
+.forEach(
+x=>x.classList.remove("active")
+);
 
+
+document
+.getElementById(
+"report"
+)
+.classList.add("active");
+
+
+setTimeout(
+function(){
+
+window.print();
+
+if(oldTab){
+
+oldTab.classList.add(
+"active"
+);
+
+}
+
+},
+100
 );
 
 }
 
 
-/* =========================
-IMPORT JSON
-========================= */
+/* =====================================================
+JSON BACKUP
+===================================================== */
+
+function exportJSON(){
+
+const blob =
+new Blob(
+[
+JSON.stringify(
+db,
+null,
+2
+)
+],
+{
+type:
+"application/json"
+}
+);
+
+
+const a =
+document.createElement("a");
+
+
+a.href =
+URL.createObjectURL(
+blob
+);
+
+
+a.download =
+"GSRTC_Tyre_Backup_"+
+today()+
+".json";
+
+
+a.click();
+
+}
+
+
+/* =====================================================
+JSON RESTORE
+===================================================== */
 
 function importJSON(event){
 
@@ -2646,6 +4053,7 @@ db=data;
 
 saveDB();
 
+
 alert(
 "Backup restore successfully થયું"
 );
@@ -2668,109 +4076,15 @@ reader.readAsText(file);
 }
 
 
-/* =========================
-CSV EXPORT
-========================= */
-
-function csvCell(value){
-
-return '"' +
-String(
-value ?? ""
-)
-.replaceAll(
-'"',
-'""'
-)
-+
-'"';
-
-}
-
-
-function exportCSV(){
-
-let rows=[
-
-[
-"Tyre No",
-"Bus",
-"Position",
-"Fit Date",
-"Remove Date",
-"Fit KM",
-"Progressive KM",
-"Total KM",
-"Status"
-]
-
-];
-
-
-db.tyres.forEach(
-t=>{
-
-rows.push([
-
-t.no,
-
-t.bus,
-
-t.pos,
-
-t.fitDate,
-
-t.removeDate,
-
-t.fitKm,
-
-t.progressive,
-
-totalTyreKm(t),
-
-t.status
-
-]);
-
-});
-
-
-const csv =
-"\ufeff" +
-rows
-.map(
-r =>
-r
-.map(csvCell)
-.join(",")
-)
-.join("\n");
-
-
-downloadFile(
-
-"GSRTC_Tyre_Report_"+
-today()+
-".csv",
-
-csv,
-
-"text/csv;charset=utf-8"
-
-);
-
-}
-
-
-/* =========================
+/* =====================================================
 CLEAR ALL
-========================= */
+===================================================== */
 
 function clearAll(){
 
 if(
 confirm(
-"⚠️ બધા Tyre, Bus, KM અને History delete કરવા છે?"
+"⚠️ બધા Bus, Tyre, KM અને History delete કરવા છે?"
 )
 ){
 
@@ -2785,9 +4099,9 @@ location.reload();
 }
 
 
-/* =========================
+/* =====================================================
 RENDER ALL
-========================= */
+===================================================== */
 
 function renderAll(){
 
@@ -2810,26 +4124,34 @@ renderPositions();
 }
 
 
-/* =========================
+/* =====================================================
 DEFAULT DATE
-========================= */
+===================================================== */
 
 document
-.getElementById("fitDate")
-.value=today();
-
-document
-.getElementById("entryDate")
-.value=today();
-
-document
-.getElementById("kmDate")
+.getElementById(
+"fitDate"
+)
 .value=today();
 
 
-/* =========================
+document
+.getElementById(
+"entryDate"
+)
+.value=today();
+
+
+document
+.getElementById(
+"kmDate"
+)
+.value=today();
+
+
+/* =====================================================
 START
-========================= */
+===================================================== */
 
 renderAll();
 
