@@ -1,313 +1,2839 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="gu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>GSRTC KM Register</title>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GSRTC Tyre Management</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#eef2f6;color:#17202a}
-header{background:#0b5cab;color:white;padding:14px 16px;position:sticky;top:0;z-index:10}
-h1{margin:0;font-size:21px}
-.sub{font-size:12px;margin-top:4px;opacity:.9}
-.wrap{padding:12px;max-width:1700px;margin:auto}
-.card{background:white;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px #0001}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}
-label{font-size:12px;font-weight:bold}
-input,select,button{font:inherit}
-input,select{width:100%;padding:10px;border:1px solid #b9c3cf;border-radius:7px;margin-top:4px}
-button{border:0;border-radius:7px;padding:10px 13px;background:#0b5cab;color:white;font-weight:bold;cursor:pointer}
-button.secondary{background:#52616f}
-button.green{background:#198754}
-button.orange{background:#d97706}
-button.red{background:#b42318}
-button.light{background:#e8eef5;color:#17324d}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.note{font-size:12px;color:#52616f;margin-top:8px}
-.tablebox{overflow:auto;border:1px solid #ccd5df;border-radius:8px;max-height:65vh}
-table{border-collapse:collapse;min-width:1900px;width:100%;background:#fff}
-th,td{border:1px solid #cbd5df;padding:6px;text-align:center;white-space:nowrap;font-size:12px}
-thead th{background:#dce9f7;position:sticky;top:0;z-index:2}
-thead tr:first-child th{background:#bcd5ed;font-size:13px}
-td.daily{font-weight:bold;background:#f7fbff}
-td.total{font-weight:bold;background:#f1f8f3}
-td input{padding:5px;margin:0;width:85px;text-align:center}
-.badge{display:inline-block;padding:4px 7px;border-radius:10px;background:#e9f3ff;color:#0b5cab;font-size:12px}
-.modal{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:center;justify-content:center;padding:12px}
-.modal.show{display:flex}
-.modalbox{background:white;border-radius:12px;max-width:1000px;width:100%;max-height:90vh;overflow:auto;padding:16px}
-.modalgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
-.small{font-size:11px;color:#5f6b76}
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f6fa;
+    color:#172033;
+}
+
+header{
+    background:#0757a0;
+    color:white;
+    padding:18px;
+    text-align:center;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+header h1{
+    margin:0;
+    font-size:23px;
+}
+
+header p{
+    margin:6px 0 0;
+    font-size:13px;
+}
+
+nav{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    padding:8px;
+    background:white;
+    position:sticky;
+    top:73px;
+    z-index:9;
+    box-shadow:0 2px 8px #0002;
+}
+
+nav button{
+    border:0;
+    background:#e8f1fb;
+    color:#0757a0;
+    padding:10px 13px;
+    border-radius:8px;
+    white-space:nowrap;
+    font-weight:bold;
+}
+
+nav button.active{
+    background:#0757a0;
+    color:white;
+}
+
+main{
+    max-width:1200px;
+    margin:auto;
+    padding:14px;
+}
+
+.tab{
+    display:none;
+}
+
+.tab.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 2px 10px #0001;
+}
+
+h2{
+    color:#0757a0;
+    font-size:19px;
+    margin:0 0 13px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+}
+
+label{
+    font-weight:bold;
+    font-size:13px;
+    display:block;
+    margin-bottom:5px;
+}
+
+input,
+select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccd5e0;
+    border-radius:7px;
+    font-size:15px;
+    background:white;
+}
+
+.btn{
+    border:0;
+    border-radius:7px;
+    padding:10px 14px;
+    font-weight:bold;
+    margin:5px 3px 0 0;
+}
+
+.primary{
+    background:#0757a0;
+    color:white;
+}
+
+.green{
+    background:#168548;
+    color:white;
+}
+
+.red{
+    background:#d93025;
+    color:white;
+}
+
+.gray{
+    background:#e9edf2;
+    color:#263548;
+}
+
+.orange{
+    background:#e67e22;
+    color:white;
+}
+
+.tablewrap{
+    overflow:auto;
+    margin-top:14px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px;
+}
+
+th,
+td{
+    border:1px solid #dce2e8;
+    padding:8px;
+    text-align:left;
+    font-size:13px;
+}
+
+th{
+    background:#eaf2fb;
+    color:#0757a0;
+}
+
+.stat{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:10px;
+}
+
+.stat div{
+    background:#eef6ff;
+    border-radius:10px;
+    padding:14px;
+    text-align:center;
+}
+
+.stat b{
+    display:block;
+    font-size:23px;
+    color:#0757a0;
+    margin-bottom:4px;
+}
+
+.msg{
+    padding:10px;
+    border-radius:7px;
+    margin-top:10px;
+    display:none;
+}
+
+.ok{
+    background:#e8f7ed;
+    color:#126b35;
+}
+
+.err{
+    background:#fdecec;
+    color:#9c1c1c;
+}
+
+.small{
+    color:#667085;
+    font-size:12px;
+}
+
+.badge{
+    padding:4px 7px;
+    border-radius:5px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.fitted{
+    background:#dff5e7;
+    color:#126b35;
+}
+
+.removed{
+    background:#fde1df;
+    color:#9c1c1c;
+}
+
+.position{
+    display:inline-block;
+    padding:7px 10px;
+    margin:4px;
+    background:#eaf2fb;
+    border-radius:7px;
+    color:#0757a0;
+    font-weight:bold;
+}
+
+.position span{
+    color:#d93025;
+    cursor:pointer;
+    margin-left:5px;
+}
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:20px;
+}
 </style>
 </head>
+
 <body>
+
 <header>
-  <h1>GSRTC KM Register</h1>
-  <div class="sub">Date-wise Daily KM → Monthly KM + all maintenance/program KM automatically increase</div>
+    <h1>GSRTC TYRE MANAGEMENT</h1>
+    <p>Bus • Tyre • Fit / Remove • Progressive KM • Total KM</p>
 </header>
 
-<div class="wrap">
-  <div class="card">
-    <div class="grid">
-      <div><label>VEH. NO.</label><input id="vehNo" placeholder="3868"></div>
-      <div><label>MAKE</label><input id="make" placeholder="TATA SU"></div>
-      <div><label>Month</label><input id="month" type="month"></div>
-    </div>
-    <div class="actions">
-      <button onclick="addDaily()">➕ ADD DAILY KM</button>
-      <button class="orange" onclick="openOldKm()">🛠 OLD KM / PROGRAM BASE</button>
-      <button class="green" onclick="exportExcel()">⬇ EXPORT EXCEL</button>
-      <button class="light" onclick="document.getElementById('file').click()">⬆ IMPORT EXCEL</button>
-      <input id="file" type="file" accept=".xlsx,.xls,.csv" hidden onchange="importExcel(event)">
-      <button class="secondary" onclick="saveBrowser()">💾 SAVE</button>
-      <button class="red" onclick="clearAll()">CLEAR</button>
-    </div>
-    <div class="note">
-      Daily KM એક જ વાર નાખો. તે જ તારીખની entry માટે Monthly KM અને નીચેના બધા program KM માં automatic add થશે.
-      Program reset/જૂનું KM નાખવું હોય તો <b>OLD KM / PROGRAM BASE</b> button વાપરો.
-    </div>
-  </div>
+<nav>
 
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
-      <b>DAILY KM REGISTER</b>
-      <span class="badge" id="summary">Total Daily KM: 0</span>
-    </div>
-    <div class="tablebox" style="margin-top:10px">
-      <table id="tbl">
-        <thead>
-          <tr>
-            <th rowspan="2">DATE</th>
-            <th rowspan="2">DAILY KM</th>
-            <th rowspan="2">MONTHLY KM</th>
-            <th rowspan="2">DOCKING KM</th>
-            <th rowspan="2">ENGINE OIL<br>CHANGE KM</th>
-            <th rowspan="2">VEH. PROG. KM</th>
-            <th rowspan="2">BREATHER<br>CARTRIDGE KM</th>
-            <th rowspan="2">FUEL FILT CUM<br>WATER SEP KM</th>
-            <th rowspan="2">UREA FILTER KM</th>
-            <th rowspan="2">PRI. AIR FILTER KM</th>
-            <th rowspan="2">SEC. AIR FILTER KM</th>
-            <th rowspan="2">GEAR OIL CHANGE KM</th>
-            <th rowspan="2">DIFF. OIL CHANGE KM</th>
-            <th rowspan="2">POWER STEERING OIL KM</th>
-            <th rowspan="2">RADIATOR COOLANT KM</th>
-            <th rowspan="2">SERVICE KIT DOSING KM</th>
-          </tr>
-          <tr></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+<button class="active" onclick="showTab('dashboard',this)">
+Dashboard
+</button>
+
+<button onclick="showTab('bus',this)">
+BUS MASTER
+</button>
+
+<button onclick="showTab('tyre',this)">
+TYRE MASTER
+</button>
+
+<button onclick="showTab('entry',this)">
+TYRE ENTRY
+</button>
+
+<button onclick="showTab('km',this)">
+DAILY KM
+</button>
+
+<button onclick="showTab('report',this)">
+REPORT
+</button>
+
+<button onclick="showTab('backup',this)">
+BACKUP
+</button>
+
+</nav>
+
+<main>
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="tab active">
+
+<div class="card">
+
+<h2>Dashboard</h2>
+
+<div class="stat">
+
+<div>
+<b id="sBus">0</b>
+Bus
 </div>
 
-<div class="modal" id="oldModal">
- <div class="modalbox">
-   <h3>જૂનું KM / Program Base KM</h3>
-   <div class="small">દરેક program માટે અગાઉનું KM નાખી શકાય છે. ત્યારબાદ Daily KM દરેક program માં automatic ઉમેરાશે.</div>
-   <div class="modalgrid" id="oldGrid" style="margin-top:12px"></div>
-   <div class="actions">
-     <button onclick="saveOldKm()">SAVE OLD KM</button>
-     <button class="secondary" onclick="closeOldKm()">CLOSE</button>
-   </div>
- </div>
+<div>
+<b id="sTyre">0</b>
+Total Tyre
 </div>
+
+<div>
+<b id="sFit">0</b>
+Fitted
+</div>
+
+<div>
+<b id="sRemove">0</b>
+Removed
+</div>
+
+<div>
+<b id="sTotalKM">0</b>
+Total KM
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Currently Fitted Tyres</h2>
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Tyre No</th>
+<th>Bus</th>
+<th>Position</th>
+<th>Fit Date</th>
+<th>Fit KM</th>
+<th>Progressive KM</th>
+<th>Total KM</th>
+</tr>
+
+</thead>
+
+<tbody id="dashRows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BUS MASTER -->
+
+<section id="bus" class="tab">
+
+<div class="card">
+
+<h2>BUS MASTER</h2>
+
+<div class="grid">
+
+<div>
+
+<label>Bus No</label>
+
+<input
+id="busNo"
+placeholder="1 અથવા BUS-01"
+>
+
+</div>
+
+</div>
+
+<button
+class="btn primary"
+onclick="addBus()"
+>
+ADD BUS
+</button>
+
+<button
+class="btn gray"
+onclick="defaultBuses()"
+>
+BUS 1 TO 75
+</button>
+
+<button
+class="btn orange"
+onclick="clearBuses()"
+>
+CLEAR BUS
+</button>
+
+<div id="busMsg" class="msg"></div>
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Bus No</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="busRows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TYRE MASTER -->
+
+<section id="tyre" class="tab">
+
+<div class="card">
+
+<h2>TYRE MASTER</h2>
+
+<div class="grid">
+
+<div>
+
+<label>Tyre Number *</label>
+
+<input
+id="tyreNo"
+placeholder="Tyre Number"
+>
+
+</div>
+
+
+<div>
+
+<label>Bus *</label>
+
+<select id="tyreBus"></select>
+
+</div>
+
+
+<div>
+
+<label>Position *</label>
+
+<select id="tyrePos"></select>
+
+</div>
+
+
+<div>
+
+<label>Fit Date *</label>
+
+<input
+id="fitDate"
+type="date"
+>
+
+</div>
+
+
+<div>
+
+<label>Fit / Starting KM</label>
+
+<input
+id="fitKm"
+type="number"
+min="0"
+value="0"
+>
+
+</div>
+
+</div>
+
+
+<button
+class="btn primary"
+onclick="saveTyre()"
+>
+ADD TYRE
+</button>
+
+<div id="tyreMsg" class="msg"></div>
+
+<p class="small">
+Tyre Number unique રહેશે. Fit KMથી Progressive KM શરૂ થશે.
+</p>
+
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Tyre No</th>
+<th>Bus</th>
+<th>Position</th>
+<th>Fit Date</th>
+<th>Fit KM</th>
+<th>Progressive KM</th>
+<th>Total KM</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="tyreRows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TYRE ENTRY -->
+
+<section id="entry" class="tab">
+
+<div class="card">
+
+<h2>TYRE FIT / REMOVE ENTRY</h2>
+
+<div class="grid">
+
+<div>
+
+<label>Tyre</label>
+
+<select id="entryTyre"></select>
+
+</div>
+
+
+<div>
+
+<label>Action</label>
+
+<select id="entryAction">
+
+<option value="FIT">
+FIT
+</option>
+
+<option value="REMOVE">
+REMOVE
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Date</label>
+
+<input
+id="entryDate"
+type="date"
+>
+
+</div>
+
+
+<div>
+
+<label>KM</label>
+
+<input
+id="entryKm"
+type="number"
+min="0"
+value="0"
+>
+
+</div>
+
+
+<div>
+
+<label>Bus</label>
+
+<select id="entryBus"></select>
+
+</div>
+
+
+<div>
+
+<label>Position</label>
+
+<select id="entryPos"></select>
+
+</div>
+
+</div>
+
+
+<button
+class="btn primary"
+onclick="saveEntry()"
+>
+SAVE ENTRY
+</button>
+
+<div id="entryMsg" class="msg"></div>
+
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Tyre</th>
+<th>Action</th>
+<th>Bus</th>
+<th>Position</th>
+<th>KM</th>
+</tr>
+
+</thead>
+
+<tbody id="entryRows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DAILY KM -->
+
+<section id="km" class="tab">
+
+<div class="card">
+
+<h2>DAILY BUS KM</h2>
+
+<div class="grid">
+
+<div>
+
+<label>Date</label>
+
+<input
+id="kmDate"
+type="date"
+>
+
+</div>
+
+
+<div>
+
+<label>Bus</label>
+
+<select id="kmBus"></select>
+
+</div>
+
+
+<div>
+
+<label>Daily KM</label>
+
+<input
+id="dailyKm"
+type="number"
+min="0"
+placeholder="Daily KM"
+>
+
+</div>
+
+</div>
+
+
+<button
+class="btn primary"
+onclick="saveDailyKm()"
+>
+ADD DAILY KM
+</button>
+
+<div id="kmMsg" class="msg"></div>
+
+<p class="small">
+Daily KM add થતાં તે Bus પર currently FITTED બધા tyresમાં KM automatic add થશે.
+</p>
+
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Bus</th>
+<th>Daily KM</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="kmRows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REPORT -->
+
+<section id="report" class="tab">
+
+<div class="card">
+
+<h2>TYRE REPORT</h2>
+
+<div class="grid">
+
+<div>
+
+<label>Bus Filter</label>
+
+<select
+id="reportBus"
+onchange="renderReport()"
+></select>
+
+</div>
+
+
+<div>
+
+<label>Status</label>
+
+<select
+id="reportStatus"
+onchange="renderReport()"
+>
+
+<option value="">
+ALL
+</option>
+
+<option value="FITTED">
+FITTED
+</option>
+
+<option value="REMOVED">
+REMOVED
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Search Tyre</label>
+
+<input
+id="reportSearch"
+oninput="renderReport()"
+placeholder="Tyre Number"
+>
+
+</div>
+
+</div>
+
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Tyre</th>
+<th>Bus</th>
+<th>Position</th>
+<th>Fit Date</th>
+<th>Remove Date</th>
+<th>Fit KM</th>
+<th>Progressive KM</th>
+<th>Total KM</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="reportRows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BACKUP -->
+
+<section id="backup" class="tab">
+
+<div class="card">
+
+<h2>BACKUP / RESTORE</h2>
+
+<button
+class="btn green"
+onclick="exportJSON()"
+>
+DOWNLOAD BACKUP
+</button>
+
+<input
+id="jsonFile"
+type="file"
+accept=".json"
+onchange="importJSON(event)"
+>
+
+<button
+class="btn primary"
+onclick="exportCSV()"
+>
+EXPORT TYRE CSV
+</button>
+
+<button
+class="btn red"
+onclick="clearAll()"
+>
+CLEAR ALL DATA
+</button>
+
+<p class="small">
+Backupમાં Bus, Tyre, Daily KM અને Fit/Remove History save થશે.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>POSITION MASTER</h2>
+
+<div class="grid">
+
+<div>
+
+<label>New Position</label>
+
+<input
+id="newPos"
+placeholder="જેમ કે NRO"
+>
+
+</div>
+
+</div>
+
+<button
+class="btn primary"
+onclick="addPosition()"
+>
+ADD POSITION
+</button>
+
+<div id="posList"></div>
+
+</div>
+
+</section>
+
+</main>
+
 
 <script>
-const PROGRAMS = [
- "DOCKING KM","ENGINE OIL CHANGE KM","VEH. PROG. KM","BREATHER CARTRIDGE KM",
- "FUEL FILT CUM WATER SEP KM","UREA FILTER KM","PRI. AIR FILTER KM",
- "SEC. AIR FILTER KM","GEAR OIL CHANGE KM","DIFF. OIL CHANGE KM",
- "POWER STEERING OIL KM","RADIATOR COOLANT KM","SERVICE KIT DOSING KM"
+
+/* =========================
+DATABASE
+========================= */
+
+const STORAGE_KEY =
+"GSRTC_TYRE_MANAGEMENT_V2";
+
+
+let db =
+JSON.parse(
+localStorage.getItem(STORAGE_KEY)
+) || {
+
+buses:[],
+
+positions:[
+"NRO",
+"NRO-2",
+"ORO",
+"ORI",
+"NF",
+"LF"
+],
+
+tyres:[],
+
+kms:[],
+
+entries:[]
+
+};
+
+
+/* =========================
+SAVE
+========================= */
+
+function saveDB(){
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(db)
+);
+
+renderAll();
+
+}
+
+
+/* =========================
+TODAY
+========================= */
+
+function today(){
+
+return new Date()
+.toISOString()
+.slice(0,10);
+
+}
+
+
+/* =========================
+ESCAPE
+========================= */
+
+function esc(value){
+
+return String(value ?? "")
+.replace(/[&<>"']/g,function(m){
+
+return {
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[m];
+
+});
+
+}
+
+
+/* =========================
+MESSAGE
+========================= */
+
+function showMessage(
+id,
+text,
+good=true
+){
+
+const el =
+document.getElementById(id);
+
+el.textContent=text;
+
+el.className =
+"msg " +
+(good ? "ok":"err");
+
+el.style.display="block";
+
+setTimeout(
+function(){
+
+el.style.display="none";
+
+},
+2500
+);
+
+}
+
+
+/* =========================
+TAB
+========================= */
+
+function showTab(id,button){
+
+document
+.querySelectorAll(".tab")
+.forEach(
+x=>x.classList.remove("active")
+);
+
+document
+.getElementById(id)
+.classList.add("active");
+
+document
+.querySelectorAll("nav button")
+.forEach(
+x=>x.classList.remove("active")
+);
+
+button.classList.add("active");
+
+renderAll();
+
+}
+
+
+/* =========================
+BUS SORT
+========================= */
+
+function sortBus(a,b){
+
+return String(a)
+.localeCompare(
+String(b),
+undefined,
+{numeric:true}
+);
+
+}
+
+
+/* =========================
+BUS 1 TO 75
+========================= */
+
+function defaultBuses(){
+
+for(let i=1;i<=75;i++){
+
+let n=String(i);
+
+if(!db.buses.includes(n)){
+
+db.buses.push(n);
+
+}
+
+}
+
+db.buses.sort(sortBus);
+
+saveDB();
+
+showMessage(
+"busMsg",
+"BUS 1 થી 75 તૈયાર થયા"
+);
+
+}
+
+
+/* =========================
+ADD BUS
+========================= */
+
+function addBus(){
+
+let n =
+document
+.getElementById("busNo")
+.value
+.trim();
+
+if(!n){
+
+showMessage(
+"busMsg",
+"Bus No નાખો",
+false
+);
+
+return;
+
+}
+
+if(db.buses.includes(n)){
+
+showMessage(
+"busMsg",
+"આ Bus પહેલેથી છે",
+false
+);
+
+return;
+
+}
+
+db.buses.push(n);
+
+db.buses.sort(sortBus);
+
+document
+.getElementById("busNo")
+.value="";
+
+saveDB();
+
+showMessage(
+"busMsg",
+"Bus add થયો"
+);
+
+}
+
+
+/* =========================
+DELETE BUS
+========================= */
+
+function deleteBus(bus){
+
+let activeTyre =
+db.tyres.some(
+t =>
+t.bus===bus &&
+t.status==="FITTED"
+);
+
+if(activeTyre){
+
+alert(
+"આ Bus પર fitted tyre છે.\nપહેલા tyre remove કરો."
+);
+
+return;
+
+}
+
+if(
+confirm(
+"Bus "+bus+" delete કરવો?"
+)
+){
+
+db.buses =
+db.buses.filter(
+x=>x!==bus
+);
+
+saveDB();
+
+}
+
+}
+
+
+/* =========================
+CLEAR BUS
+========================= */
+
+function clearBuses(){
+
+if(
+confirm(
+"બધા Bus delete કરવા છે?"
+)
+){
+
+db.buses=[];
+
+saveDB();
+
+}
+
+}
+
+
+/* =========================
+OPTIONS
+========================= */
+
+function makeOptions(
+arr,
+selected=""
+){
+
+return arr
+.map(
+x =>
+
+`<option
+value="${esc(x)}"
+${String(x)===String(selected)?"selected":""}
+>
+${esc(x)}
+</option>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+POPULATE SELECTS
+========================= */
+
+function populateSelects(){
+
+const busIds=[
+"tyreBus",
+"entryBus",
+"kmBus",
+"reportBus"
 ];
 
-let rows = [];
-let base = {};
-PROGRAMS.forEach(p => base[p]=0);
+busIds.forEach(
+function(id){
 
-const $ = id => document.getElementById(id);
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
-function num(v){let n=parseFloat(String(v??"").replace(/,/g,""));return Number.isFinite(n)?n:0;}
-function fmt(n){return Math.round(num(n)).toLocaleString("en-IN");}
+const el =
+document.getElementById(id);
 
-function init(){
-  const d=new Date();
-  $("month").value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-  render();
-}
-function totalDaily(){return rows.reduce((a,r)=>a+num(r.daily),0);}
+const old =
+el.value;
 
-function currentProgramValue(program, index){
-  let before=0;
-  for(let i=0;i<=index;i++) before += num(rows[i].daily);
-  return num(base[program])+before;
-}
+el.innerHTML =
+'<option value="">-- Select Bus --</option>' +
+makeOptions(
+db.buses,
+old
+);
 
-function addDaily(){
-  const d=new Date();
-  const defaultDate=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  const date=prompt("Date (DD-MM-YYYY)", defaultDate.split("-").reverse().join("-"));
-  if(!date) return;
-  const daily=prompt("DAILY KM", "");
-  if(daily===null) return;
-  const km=num(daily);
-  if(km<0){alert("Daily KM ખોટું છે.");return;}
-  const old=rows.find(r=>r.date===date);
-  if(old){
-    if(!confirm("આ તારીખની entry પહેલેથી છે. Daily KM replace કરવો?")) return;
-    old.daily=km;
-  }else rows.push({date,daily:km});
-  rows.sort((a,b)=>dateKey(a.date)-dateKey(b.date));
-  render();
-}
+el.value=old;
 
-function dateKey(s){
-  const p=String(s).split("-");
-  if(p.length===3 && p[2]?.length===4) return new Date(+p[2],+p[1]-1,+p[0]).getTime();
-  return new Date(s).getTime()||0;
-}
+});
 
-function monthlyFor(index){
-  const month=String(rows[index].date).slice(3);
-  let total=0;
-  rows.forEach(r=>{if(String(r.date).slice(3)===month) total+=num(r.daily)});
-  return total;
-}
 
-function render(){
-  const tb=document.querySelector("#tbl tbody");
-  tb.innerHTML="";
-  rows.forEach((r,i)=>{
-    let html=`<tr>
-      <td>${esc(r.date)}</td>
-      <td class="daily"><input type="number" min="0" value="${num(r.daily)}" onchange="editDaily(${i},this.value)"></td>
-      <td class="total">${fmt(monthlyFor(i))}</td>`;
-    PROGRAMS.forEach(p=>html+=`<td>${fmt(currentProgramValue(p,i))}</td>`);
-    html+="</tr>";
-    tb.insertAdjacentHTML("beforeend",html);
-  });
-  $("summary").textContent="Total Daily KM: "+fmt(totalDaily());
-}
+const tyrePos =
+document.getElementById("tyrePos");
 
-function editDaily(i,v){
-  rows[i].daily=Math.max(0,num(v));
-  render();
-}
+let oldPos =
+tyrePos.value;
 
-function openOldKm(){
-  const grid=$("oldGrid");
-  grid.innerHTML=PROGRAMS.map((p,i)=>`
-    <div><label>${i+4}. ${esc(p)}</label><input class="old-input" data-p="${esc(p)}" type="number" value="${num(base[p])}"></div>
-  `).join("");
-  $("oldModal").classList.add("show");
-}
-function closeOldKm(){$("oldModal").classList.remove("show");}
-function saveOldKm(){
-  document.querySelectorAll(".old-input").forEach(x=>base[x.dataset.p]=num(x.value));
-  closeOldKm(); render();
+tyrePos.innerHTML =
+makeOptions(
+db.positions,
+oldPos
+);
+
+
+const entryPos =
+document.getElementById("entryPos");
+
+oldPos =
+entryPos.value;
+
+entryPos.innerHTML =
+makeOptions(
+db.positions,
+oldPos
+);
+
+
+/* TYRE SELECT */
+
+const entryTyre =
+document.getElementById("entryTyre");
+
+let oldTyre =
+entryTyre.value;
+
+entryTyre.innerHTML =
+'<option value="">-- Select Tyre --</option>' +
+
+db.tyres
+.map(
+t=>
+`<option
+value="${esc(t.no)}"
+>
+${esc(t.no)}
+ - ${esc(t.status)}
+</option>`
+)
+.join("");
+
+entryTyre.value=oldTyre;
+
 }
 
-function saveBrowser(){
-  localStorage.setItem("GSRTC_KM_REGISTER",JSON.stringify({
-    vehNo:$("vehNo").value,make:$("make").value,month:$("month").value,rows,base
-  }));
-  alert("Data saved.");
-}
-function loadBrowser(){
-  try{
-    const x=JSON.parse(localStorage.getItem("GSRTC_KM_REGISTER")||"null");
-    if(!x)return;
-    $("vehNo").value=x.vehNo||"";
-    $("make").value=x.make||"";
-    $("month").value=x.month||$("month").value;
-    rows=Array.isArray(x.rows)?x.rows:[];
-    base=Object.assign(base,x.base||{});
-  }catch(e){}
+
+/* =========================
+TOTAL TYRE KM
+========================= */
+
+function totalTyreKm(t){
+
+return Math.max(
+0,
+(Number(t.progressive)||0) -
+(Number(t.fitKm)||0)
+);
+
 }
 
-function exportExcel(){
-  const wb=XLSX.utils.book_new();
-  const data=[
-    ["VEH. NO.",$("vehNo").value,"MAKE",$("make").value],
-    ["DATE","DAILY KM","MONTHLY KM",...PROGRAMS]
-  ];
-  rows.forEach((r,i)=>{
-    data.push([r.date,num(r.daily),monthlyFor(i),...PROGRAMS.map(p=>currentProgramValue(p,i))]);
-  });
-  const ws=XLSX.utils.aoa_to_sheet(data);
-  ws["!cols"]=[{wch:14},{wch:12},{wch:14},...PROGRAMS.map(()=>({wch:18}))];
-  XLSX.utils.book_append_sheet(wb,ws,"KM Register");
-  const name=`GSRTC_KM_${($("month").value||"REGISTER").replace("-","")}.xlsx`;
-  XLSX.writeFile(wb,name);
+
+/* =========================
+ADD TYRE
+========================= */
+
+function saveTyre(){
+
+const no =
+document
+.getElementById("tyreNo")
+.value
+.trim();
+
+const bus =
+document
+.getElementById("tyreBus")
+.value;
+
+const pos =
+document
+.getElementById("tyrePos")
+.value;
+
+const date =
+document
+.getElementById("fitDate")
+.value ||
+today();
+
+const fitKm =
+Number(
+document
+.getElementById("fitKm")
+.value
+) || 0;
+
+
+if(!no){
+
+showMessage(
+"tyreMsg",
+"Tyre Number નાખો",
+false
+);
+
+return;
+
 }
 
-function importExcel(ev){
-  const f=ev.target.files[0]; if(!f)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const wb=XLSX.read(e.target.result,{type:"array"});
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      const a=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
-      if(!a.length)throw Error("Empty Excel");
-      let veh="",make="",headerRow=-1;
-      for(let i=0;i<Math.min(8,a.length);i++){
-        const line=a[i].map(v=>String(v).trim().toUpperCase());
-        if(line.includes("DATE")) headerRow=i;
-        const vi=line.indexOf("VEH. NO."); if(vi>=0) veh=a[i][vi+1]||"";
-        const mi=line.indexOf("MAKE"); if(mi>=0) make=a[i][mi+1]||"";
-      }
-      if(headerRow<0){
-        headerRow=a.findIndex(r=>r.some(v=>String(v).trim().toUpperCase()==="DATE"));
-      }
-      if(headerRow<0)throw Error("DATE column not found");
-      const headers=a[headerRow].map(v=>String(v).trim().toUpperCase());
-      const aliases={
-        "DATE":["DATE"],"DAILY KM":["DAILY KM","DAILY_KM","DEALY KM","DEALY_KM"],
-        "MONTHLY KM":["MONTHLY KM","MONTHLY_KM"]
-      };
-      const idx=(name)=>{
-        const candidates=aliases[name]||[name];
-        for(const c of candidates){const j=headers.indexOf(c);if(j>=0)return j;}
-        return -1;
-      };
-      const di=idx("DATE"), ki=idx("DAILY KM");
-      if(di<0||ki<0)throw Error("DATE / DAILY KM column not found");
-      const imported=[];
-      for(let i=headerRow+1;i<a.length;i++){
-        const date=a[i][di];
-        if(date===""||date==null)continue;
-        let ds="";
-        if(typeof date==="number"){
-          const z=XLSX.SSF.parse_date_code(date);
-          ds=`${String(z.d).padStart(2,"0")}-${String(z.m).padStart(2,"0")}-${z.y}`;
-        }else ds=String(date).trim();
-        imported.push({date:ds,daily:num(a[i][ki])});
-      }
-      rows=imported;
-      if(veh)$("vehNo").value=veh;
-      if(make)$("make").value=make;
-      // If imported sheet already contains opening/base program KM,
-      // use the first available program value as the base.
-      PROGRAMS.forEach(p=>{
-        const j=headers.indexOf(p);
-        if(j>=0 && a[headerRow+1]) base[p]=num(a[headerRow+1][j]);
-      });
-      render();
-      alert(`IMPORT COMPLETE\\nImported rows: ${rows.length}`);
-    }catch(err){alert("Excel import error: "+err.message);}
-    ev.target.value="";
-  };
-  reader.readAsArrayBuffer(f);
+
+if(!bus){
+
+showMessage(
+"tyreMsg",
+"Bus પસંદ કરો",
+false
+);
+
+return;
+
 }
+
+
+if(!pos){
+
+showMessage(
+"tyreMsg",
+"Position પસંદ કરો",
+false
+);
+
+return;
+
+}
+
+
+const duplicate =
+db.tyres.some(
+t =>
+t.no.toLowerCase() ===
+no.toLowerCase()
+);
+
+if(duplicate){
+
+showMessage(
+"tyreMsg",
+"આ Tyre Number પહેલેથી છે",
+false
+);
+
+return;
+
+}
+
+
+db.tyres.push({
+
+id:Date.now(),
+
+no:no,
+
+bus:bus,
+
+pos:pos,
+
+fitDate:date,
+
+fitKm:fitKm,
+
+progressive:fitKm,
+
+removeDate:"",
+
+removeKm:0,
+
+status:"FITTED"
+
+});
+
+
+db.entries.push({
+
+date:date,
+
+tyre:no,
+
+action:"FIT",
+
+bus:bus,
+
+pos:pos,
+
+km:fitKm
+
+});
+
+
+document
+.getElementById("tyreNo")
+.value="";
+
+
+saveDB();
+
+
+showMessage(
+"tyreMsg",
+"Tyre successfully add થયો"
+);
+
+}
+
+
+/* =========================
+REMOVE TYRE
+========================= */
+
+function removeTyre(id){
+
+const tyre =
+db.tyres.find(
+t=>t.id===id
+);
+
+if(!tyre){
+
+return;
+
+}
+
+
+if(tyre.status==="REMOVED"){
+
+return;
+
+}
+
+
+if(
+!confirm(
+"Tyre "+tyre.no+
+" remove કરવો?"
+)
+){
+
+return;
+
+}
+
+
+tyre.status="REMOVED";
+
+tyre.removeDate=today();
+
+tyre.removeKm=
+tyre.progressive;
+
+
+db.entries.push({
+
+date:tyre.removeDate,
+
+tyre:tyre.no,
+
+action:"REMOVE",
+
+bus:tyre.bus,
+
+pos:tyre.pos,
+
+km:tyre.removeKm
+
+});
+
+
+saveDB();
+
+
+showMessage(
+"tyreMsg",
+"Tyre remove થઈ ગયો"
+);
+
+}
+
+
+/* =========================
+FIT / REMOVE ENTRY
+========================= */
+
+function saveEntry(){
+
+const no =
+document
+.getElementById("entryTyre")
+.value;
+
+const action =
+document
+.getElementById("entryAction")
+.value;
+
+const date =
+document
+.getElementById("entryDate")
+.value ||
+today();
+
+const km =
+Number(
+document
+.getElementById("entryKm")
+.value
+) || 0;
+
+const bus =
+document
+.getElementById("entryBus")
+.value;
+
+const pos =
+document
+.getElementById("entryPos")
+.value;
+
+
+const tyre =
+db.tyres.find(
+t=>t.no===no
+);
+
+
+if(!tyre){
+
+showMessage(
+"entryMsg",
+"Tyre પસંદ કરો",
+false
+);
+
+return;
+
+}
+
+
+/* REMOVE */
+
+if(action==="REMOVE"){
+
+if(tyre.status==="REMOVED"){
+
+showMessage(
+"entryMsg",
+"Tyre પહેલેથી removed છે",
+false
+);
+
+return;
+
+}
+
+
+tyre.status="REMOVED";
+
+tyre.removeDate=date;
+
+tyre.removeKm=km;
+
+tyre.progressive=km;
+
+
+db.entries.push({
+
+date:date,
+
+tyre:no,
+
+action:"REMOVE",
+
+bus:tyre.bus,
+
+pos:tyre.pos,
+
+km:km
+
+});
+
+}
+
+
+/* FIT */
+
+else{
+
+if(tyre.status==="FITTED"){
+
+showMessage(
+"entryMsg",
+"Tyre પહેલેથી fitted છે",
+false
+);
+
+return;
+
+}
+
+
+if(!bus || !pos){
+
+showMessage(
+"entryMsg",
+"Bus અને Position પસંદ કરો",
+false
+);
+
+return;
+
+}
+
+
+tyre.status="FITTED";
+
+tyre.bus=bus;
+
+tyre.pos=pos;
+
+tyre.fitDate=date;
+
+tyre.fitKm=km;
+
+tyre.progressive=km;
+
+tyre.removeDate="";
+
+tyre.removeKm=0;
+
+
+db.entries.push({
+
+date:date,
+
+tyre:no,
+
+action:"FIT",
+
+bus:bus,
+
+pos:pos,
+
+km:km
+
+});
+
+}
+
+
+saveDB();
+
+
+showMessage(
+"entryMsg",
+"Entry successfully saved"
+);
+
+}
+
+
+/* =========================
+DAILY KM
+========================= */
+
+function saveDailyKm(){
+
+const date =
+document
+.getElementById("kmDate")
+.value ||
+today();
+
+const bus =
+document
+.getElementById("kmBus")
+.value;
+
+const km =
+Number(
+document
+.getElementById("dailyKm")
+.value
+);
+
+
+if(!bus){
+
+showMessage(
+"kmMsg",
+"Bus પસંદ કરો",
+false
+);
+
+return;
+
+}
+
+
+if(
+!Number.isFinite(km) ||
+km<0
+){
+
+showMessage(
+"kmMsg",
+"Daily KM બરાબર નાખો",
+false
+);
+
+return;
+
+}
+
+
+/*
+જો એ જ Date + Bus પહેલેથી હોય
+તો old KM અને new KM વચ્ચેનો difference
+tyre માં add થાય છે.
+*/
+
+const old =
+db.kms.find(
+x =>
+x.date===date &&
+x.bus===bus
+);
+
+
+if(old){
+
+const difference =
+km - Number(old.km);
+
+old.km=km;
+
+applyBusDifference(
+bus,
+difference
+);
+
+}
+
+else{
+
+db.kms.push({
+
+id:Date.now(),
+
+date:date,
+
+bus:bus,
+
+km:km
+
+});
+
+
+applyBusDifference(
+bus,
+km
+);
+
+}
+
+
+document
+.getElementById("dailyKm")
+.value="";
+
+
+saveDB();
+
+
+showMessage(
+"kmMsg",
+"Daily KM saved અને fitted tyresમાં add થયું"
+);
+
+}
+
+
+/* =========================
+APPLY BUS KM
+========================= */
+
+function applyBusDifference(
+bus,
+difference
+){
+
+db.tyres
+.filter(
+t =>
+t.bus===bus &&
+t.status==="FITTED"
+)
+.forEach(
+t => {
+
+t.progressive =
+Math.max(
+Number(t.fitKm)||0,
+(Number(t.progressive)||0)
++
+Number(difference)
+);
+
+});
+
+}
+
+
+/* =========================
+DELETE DAILY KM
+========================= */
+
+function deleteKm(index){
+
+const record =
+db.kms[index];
+
+if(!record){
+
+return;
+
+}
+
+
+if(
+!confirm(
+"આ Daily KM delete કરવો?"
+)
+){
+
+return;
+
+}
+
+
+/*
+Delete કરતાં tyre progressiveમાંથી
+એ KM પાછું subtract થશે.
+*/
+
+applyBusDifference(
+record.bus,
+-Number(record.km)
+);
+
+
+db.kms.splice(
+index,
+1
+);
+
+
+saveDB();
+
+}
+
+
+/* =========================
+RENDER BUS
+========================= */
+
+function renderBus(){
+
+const body =
+document.getElementById(
+"busRows"
+);
+
+if(db.buses.length===0){
+
+body.innerHTML =
+'<tr><td colspan="2" class="empty">No Bus</td></tr>';
+
+return;
+
+}
+
+
+body.innerHTML =
+db.buses
+.map(
+bus =>
+
+`<tr>
+
+<td>
+<b>${esc(bus)}</b>
+</td>
+
+<td>
+
+<button
+class="btn red"
+onclick="deleteBus('${esc(bus)}')"
+>
+DELETE
+</button>
+
+</td>
+
+</tr>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+RENDER TYRES
+========================= */
+
+function renderTyres(){
+
+const body =
+document.getElementById(
+"tyreRows"
+);
+
+
+if(db.tyres.length===0){
+
+body.innerHTML =
+'<tr><td colspan="9" class="empty">No Tyre</td></tr>';
+
+return;
+
+}
+
+
+body.innerHTML =
+db.tyres
+.map(
+t =>
+
+`<tr>
+
+<td>
+<b>${esc(t.no)}</b>
+</td>
+
+<td>${esc(t.bus)}</td>
+
+<td>${esc(t.pos)}</td>
+
+<td>${esc(t.fitDate)}</td>
+
+<td>${t.fitKm}</td>
+
+<td>
+<b>${t.progressive}</b>
+</td>
+
+<td>
+<b>${totalTyreKm(t)}</b>
+</td>
+
+<td>
+
+<span class="badge ${
+t.status==="FITTED"
+?"fitted"
+:"removed"
+}">
+
+${t.status}
+
+</span>
+
+</td>
+
+<td>
+
+${
+t.status==="FITTED"
+
+?
+
+`<button
+class="btn red"
+onclick="removeTyre(${t.id})"
+>
+REMOVE
+</button>`
+
+:
+
+""
+
+}
+
+</td>
+
+</tr>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+RENDER DAILY KM
+========================= */
+
+function renderKms(){
+
+const body =
+document.getElementById(
+"kmRows"
+);
+
+
+if(db.kms.length===0){
+
+body.innerHTML =
+'<tr><td colspan="4" class="empty">No KM Record</td></tr>';
+
+return;
+
+}
+
+
+body.innerHTML =
+db.kms
+.slice()
+.reverse()
+.map(
+(r,reverseIndex)=>{
+
+const index =
+db.kms.length -
+1 -
+reverseIndex;
+
+return `
+
+<tr>
+
+<td>${esc(r.date)}</td>
+
+<td>${esc(r.bus)}</td>
+
+<td>
+<b>${r.km}</b>
+</td>
+
+<td>
+
+<button
+class="btn red"
+onclick="deleteKm(${index})"
+>
+DELETE
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}
+)
+.join("");
+
+}
+
+
+/* =========================
+RENDER ENTRIES
+========================= */
+
+function renderEntries(){
+
+const body =
+document.getElementById(
+"entryRows"
+);
+
+
+if(db.entries.length===0){
+
+body.innerHTML =
+'<tr><td colspan="6" class="empty">No Entry</td></tr>';
+
+return;
+
+}
+
+
+body.innerHTML =
+db.entries
+.slice()
+.reverse()
+.map(
+e =>
+
+`<tr>
+
+<td>${esc(e.date)}</td>
+
+<td>
+<b>${esc(e.tyre)}</b>
+</td>
+
+<td>${esc(e.action)}</td>
+
+<td>${esc(e.bus)}</td>
+
+<td>${esc(e.pos)}</td>
+
+<td>${e.km}</td>
+
+</tr>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+REPORT
+========================= */
+
+function renderReport(){
+
+const bus =
+document
+.getElementById("reportBus")
+.value;
+
+const status =
+document
+.getElementById("reportStatus")
+.value;
+
+const search =
+document
+.getElementById("reportSearch")
+.value
+.toLowerCase();
+
+
+const records =
+db.tyres.filter(
+t =>
+
+(!bus || t.bus===bus) &&
+
+(!status || t.status===status) &&
+
+(!search ||
+t.no
+.toLowerCase()
+.includes(search))
+
+);
+
+
+const body =
+document.getElementById(
+"reportRows"
+);
+
+
+if(records.length===0){
+
+body.innerHTML =
+'<tr><td colspan="9" class="empty">No Record</td></tr>';
+
+return;
+
+}
+
+
+body.innerHTML =
+records
+.map(
+t =>
+
+`<tr>
+
+<td><b>${esc(t.no)}</b></td>
+
+<td>${esc(t.bus)}</td>
+
+<td>${esc(t.pos)}</td>
+
+<td>${esc(t.fitDate)}</td>
+
+<td>${esc(t.removeDate)}</td>
+
+<td>${t.fitKm}</td>
+
+<td><b>${t.progressive}</b></td>
+
+<td><b>${totalTyreKm(t)}</b></td>
+
+<td>${t.status}</td>
+
+</tr>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+DASHBOARD
+========================= */
+
+function renderDashboard(){
+
+const fitted =
+db.tyres.filter(
+t=>t.status==="FITTED"
+);
+
+const removed =
+db.tyres.filter(
+t=>t.status==="REMOVED"
+);
+
+
+let totalKm=0;
+
+db.tyres.forEach(
+t=>{
+totalKm +=
+totalTyreKm(t);
+});
+
+
+document
+.getElementById("sBus")
+.textContent =
+db.buses.length;
+
+
+document
+.getElementById("sTyre")
+.textContent =
+db.tyres.length;
+
+
+document
+.getElementById("sFit")
+.textContent =
+fitted.length;
+
+
+document
+.getElementById("sRemove")
+.textContent =
+removed.length;
+
+
+document
+.getElementById("sTotalKM")
+.textContent =
+totalKm;
+
+
+const body =
+document.getElementById(
+"dashRows"
+);
+
+
+if(fitted.length===0){
+
+body.innerHTML =
+'<tr><td colspan="7" class="empty">No fitted tyre</td></tr>';
+
+return;
+
+}
+
+
+body.innerHTML =
+fitted
+.map(
+t =>
+
+`<tr>
+
+<td>${esc(t.no)}</td>
+
+<td>${esc(t.bus)}</td>
+
+<td>${esc(t.pos)}</td>
+
+<td>${esc(t.fitDate)}</td>
+
+<td>${t.fitKm}</td>
+
+<td><b>${t.progressive}</b></td>
+
+<td><b>${totalTyreKm(t)}</b></td>
+
+</tr>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+POSITION ADD
+========================= */
+
+function addPosition(){
+
+const p =
+document
+.getElementById("newPos")
+.value
+.trim();
+
+
+if(!p){
+
+return;
+
+}
+
+
+if(
+db.positions.includes(p)
+){
+
+alert(
+"આ Position પહેલેથી છે"
+);
+
+return;
+
+}
+
+
+db.positions.push(p);
+
+document
+.getElementById("newPos")
+.value="";
+
+
+saveDB();
+
+}
+
+
+/* =========================
+POSITION DELETE
+========================= */
+
+function deletePosition(p){
+
+if(
+confirm(
+"Position "+p+
+" delete કરવી?"
+)
+){
+
+db.positions =
+db.positions.filter(
+x=>x!==p
+);
+
+saveDB();
+
+}
+
+}
+
+
+/* =========================
+POSITION LIST
+========================= */
+
+function renderPositions(){
+
+const el =
+document.getElementById(
+"posList"
+);
+
+
+el.innerHTML =
+db.positions
+.map(
+p =>
+
+`<span class="position">
+
+${esc(p)}
+
+<span
+onclick="deletePosition('${esc(p)}')"
+>
+✕
+</span>
+
+</span>`
+
+)
+.join("");
+
+}
+
+
+/* =========================
+JSON BACKUP
+========================= */
+
+function downloadFile(
+filename,
+data,
+type
+){
+
+const blob =
+new Blob(
+[data],
+{type:type}
+);
+
+
+const url =
+URL.createObjectURL(blob);
+
+
+const a =
+document.createElement("a");
+
+a.href=url;
+
+a.download=filename;
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+}
+
+
+function exportJSON(){
+
+downloadFile(
+
+"GSRTC_Tyre_Backup_"+
+today()+
+".json",
+
+JSON.stringify(
+db,
+null,
+2
+),
+
+"application/json"
+
+);
+
+}
+
+
+/* =========================
+IMPORT JSON
+========================= */
+
+function importJSON(event){
+
+const file =
+event.target.files[0];
+
+
+if(!file){
+
+return;
+
+}
+
+
+const reader =
+new FileReader();
+
+
+reader.onload =
+function(){
+
+try{
+
+const data =
+JSON.parse(
+reader.result
+);
+
+
+if(
+!data.buses ||
+!data.tyres
+){
+
+throw new Error();
+
+}
+
+
+db=data;
+
+saveDB();
+
+alert(
+"Backup restore successfully થયું"
+);
+
+}
+
+catch(error){
+
+alert(
+"Invalid Backup File"
+);
+
+}
+
+};
+
+
+reader.readAsText(file);
+
+}
+
+
+/* =========================
+CSV EXPORT
+========================= */
+
+function csvCell(value){
+
+return '"' +
+String(
+value ?? ""
+)
+.replaceAll(
+'"',
+'""'
+)
++
+'"';
+
+}
+
+
+function exportCSV(){
+
+let rows=[
+
+[
+"Tyre No",
+"Bus",
+"Position",
+"Fit Date",
+"Remove Date",
+"Fit KM",
+"Progressive KM",
+"Total KM",
+"Status"
+]
+
+];
+
+
+db.tyres.forEach(
+t=>{
+
+rows.push([
+
+t.no,
+
+t.bus,
+
+t.pos,
+
+t.fitDate,
+
+t.removeDate,
+
+t.fitKm,
+
+t.progressive,
+
+totalTyreKm(t),
+
+t.status
+
+]);
+
+});
+
+
+const csv =
+"\ufeff" +
+rows
+.map(
+r =>
+r
+.map(csvCell)
+.join(",")
+)
+.join("\n");
+
+
+downloadFile(
+
+"GSRTC_Tyre_Report_"+
+today()+
+".csv",
+
+csv,
+
+"text/csv;charset=utf-8"
+
+);
+
+}
+
+
+/* =========================
+CLEAR ALL
+========================= */
 
 function clearAll(){
-  if(!confirm("બધી KM entry delete કરવી?"))return;
-  rows=[]; render();
+
+if(
+confirm(
+"⚠️ બધા Tyre, Bus, KM અને History delete કરવા છે?"
+)
+){
+
+localStorage.removeItem(
+STORAGE_KEY
+);
+
+location.reload();
+
 }
-init(); loadBrowser(); render();
+
+}
+
+
+/* =========================
+RENDER ALL
+========================= */
+
+function renderAll(){
+
+populateSelects();
+
+renderBus();
+
+renderTyres();
+
+renderKms();
+
+renderEntries();
+
+renderReport();
+
+renderDashboard();
+
+renderPositions();
+
+}
+
+
+/* =========================
+DEFAULT DATE
+========================= */
+
+document
+.getElementById("fitDate")
+.value=today();
+
+document
+.getElementById("entryDate")
+.value=today();
+
+document
+.getElementById("kmDate")
+.value=today();
+
+
+/* =========================
+START
+========================= */
+
+renderAll();
+
 </script>
+
 </body>
 </html>
